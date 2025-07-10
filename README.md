@@ -1,69 +1,43 @@
-# React + TypeScript + Vite
+# 🎨 codeCanvas
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to **codeCanvas** — a colorful collage of random mini projects, experiments, and creative code snippets. This repo is my digital sketchbook where I tinker with new ideas, try out technologies, and build just for the fun of it.
 
-Currently, two official plugins are available:
+## ✨ What's Inside
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+You'll find a variety of bite-sized projects here, including but not limited to:
 
-## Expanding the ESLint configuration
+- 💻 Mini web apps
+- 🧩 Algorithm experiments
+- 🎮 Tiny games
+- 📊 Data visualizations
+- ⚙️ API play-arounds
+- 🎨 UI/UX prototypes
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Each folder is a self-contained project with its own `README` (if necessary), and may use different tech stacks depending on the idea.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🧠 Purpose
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+This repo serves as:
+- A playground to learn and explore new tech
+- A showcase of creative and technical mini builds
+- A reference library for patterns, tools, and experiments
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Tech Stack
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Some technologies and tools used across the projects:
+- HTML, CSS, JavaScript
+- React
+- Node.js, Express, Python
+- APIs, Canvas, WebGL
+- Git, GitHub, VS Code
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+(Each project will list its specific stack.)
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🚀 Getting Started
+
+Clone the repo:
+
+```bash
+git clone https://github.com/S0Vishnu/codeCanvas.git
+cd codeCanvas
 ```
