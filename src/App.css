@@ -1,0 +1,18 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.home-button{
+  position: fixed;
+  padding: 4px;
+  left: 12px;
+  top: 12px;
+  outline: none;
+}
+
+.main-header{
+  margin-bottom: 12px;
+  margin-left: 40px;
+}

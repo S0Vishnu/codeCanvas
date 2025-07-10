@@ -1,0 +1,31 @@
+.cb-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 9999;
+  will-change: transform;
+  isolation: isolate;
+  mix-blend-mode: exclusion;
+}
+
+.cb-cursor-inner {
+  width: 20px;
+  height: 20px;
+  transform-origin: center;
+  background: #fff;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+body.cursor-hidden .cb-cursor {
+  scale: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.button-hovered .cb-cursor-inner {
+  height: 60px;
+  width: 60px;
+}
