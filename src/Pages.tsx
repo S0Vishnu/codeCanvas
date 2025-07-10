@@ -5,6 +5,7 @@ const Pages = () => {
 
   const links = [
     { name: "Parser - String to JSON", path: "/parser" },
+    { name: "Three.js Animator and Configurer", path: "/three-js-animator-and-configurer" },
     // add more links here
   ];
 
