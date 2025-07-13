@@ -1,36 +1,65 @@
 import { Canvas } from "@react-three/fiber";
-import {
-  CameraControls,
-  Environment,
-  GizmoHelper,
-  GizmoViewport,
-} from "@react-three/drei";
+import SceneAssets from "./assetsHandler/SceneAssets";
+import EnvironmentAndLights from "./sceneHandler/EnvironmentAndLights";
+import { useEffect, useRef, useState } from "react";
+import type { Group } from "three";
+import BoxSelectHelper from "./sceneHandler/BoxSelectHelper";
+import BoxSelectOverlay from "./sceneHandler/BoxSelectOverlay";
+import TransformControlsWrapper from "./sceneHandler/TransformControlsWrapper";
+import { setupDeleteKeyHandler } from "./utils/setupDeleteKeyHandler";
+import { useAssetStore } from "./store/useAssetStore";
 
 const Scene = () => {
-  return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <Canvas camera={{ position: [0, 2, 5], fov: 50 }} shadows>
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[15, 15, 15]} intensity={1} castShadow />
-        <Environment preset="city" />
-        <mesh position={[0, 1, 0]} castShadow receiveShadow>
-          <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color="#e63946" />
-        </mesh>
+  const { deleteAsset } = useAssetStore();
+  const [selected, setSelected] = useState<string[]>([]);
+  const selectedRefs = useRef<Group[]>([]);
+  const [selectionBox, setSelectionBox] = useState<DOMRect | null>(null);
 
-        <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-          <planeGeometry args={[100, 100]} />
-          <meshStandardMaterial color="#232323" />
-        </mesh>
-        <CameraControls />
-        <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
-          <GizmoViewport
-            axisColors={["#F64418", "#1ADF3E", "#1A9DDF"]}
-            labelColor="black"
-          />
-          {/* alternative: <GizmoViewcube /> */}
-        </GizmoHelper>
+  useEffect(() => {
+    const cleanup = setupDeleteKeyHandler(() => selected, deleteAsset);
+    return cleanup;
+  }, [selected, deleteAsset]);
+
+  const clickStart = useRef<{ x: number; y: number } | null>(null);
+
+  const handleMouseDown = (e: MouseEvent) => {
+    clickStart.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMouseUp = (e: MouseEvent) => {
+    if (!clickStart.current) return;
+
+    const dx = Math.abs(e.clientX - clickStart.current.x);
+    const dy = Math.abs(e.clientY - clickStart.current.y);
+    const isClick = dx < 2 && dy < 2;
+
+    if (isClick) {
+      setSelected([]);
+    }
+
+    clickStart.current = null;
+  };
+
+  useEffect(() => {
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, []);
+
+  return (
+    <div style={{ width: "100%", height: "100%" }}>
+      <Canvas camera={{ position: [0, 2, 5], fov: 50 }} shadows>
+        <EnvironmentAndLights />
+        <SceneAssets selected={selected} selectedRefs={selectedRefs} />
+        <BoxSelectHelper domRect={selectionBox} onSelect={setSelected} />
+        {selectedRefs.current.length > 0 && (
+          <TransformControlsWrapper object={selectedRefs.current[0]} />
+        )}
       </Canvas>
+      <BoxSelectOverlay onBoxSelect={setSelectionBox} />
     </div>
   );
 };

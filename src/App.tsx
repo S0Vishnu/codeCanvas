@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import Cursor from "./components/Cursor";
 import { StringToArrayParser } from "./pages/StringToArrayParser";
 import "./App.css";
 import Pages from "./Pages";
@@ -9,7 +8,6 @@ import AnimationEditor from "./pages/AnimationEditor";
 function App() {
   return (
     <>
-      <Cursor />
       <HomeButton />
       <Routes>
         <Route path="/" element={<Pages />} />
