@@ -1,18 +1,25 @@
 export const setupDeleteKeyHandler = (
   getSelectedIds: () => string[],
-  deleteAsset: (id: string) => void
+  deleteAsset: (id: string) => Promise<void>
 ) => {
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Delete" || e.key === "Backspace") {
-      const selected = getSelectedIds();
-      selected.forEach((id) => deleteAsset(id));
+  const handleKeyDown = async (e: KeyboardEvent) => {
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault();
+      const selectedIds = getSelectedIds();
+      if (selectedIds.length > 0) {
+        try {
+          // Delete all selected assets concurrently
+          await Promise.all(selectedIds.map(id => deleteAsset(id)));
+        } catch (error) {
+          console.error('Error deleting assets:', error);
+        }
+      }
     }
   };
 
-  window.addEventListener("keydown", onKeyDown);
-
-  // Cleanup function for manual unbinding (if needed)
+  window.addEventListener('keydown', handleKeyDown);
+  
   return () => {
-    window.removeEventListener("keydown", onKeyDown);
+    window.removeEventListener('keydown', handleKeyDown);
   };
 };

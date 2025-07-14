@@ -1,34 +1,108 @@
 import React, {
   useEffect,
-  useRef,
   useImperativeHandle,
+  useRef,
+  useState,
+  Suspense,
 } from "react";
-import { useGLTF } from "@react-three/drei";
 import { Group } from "three";
+import { useGLTF } from "@react-three/drei";
+import { getGLTFById } from "../utils/indexedDb";
 import type { Asset } from "../store/useAssetStore";
 
-const GLTFModel = React.forwardRef<Group, { asset: Asset; isSelected: boolean }>(
-  ({ asset }, ref) => {
-    const { scene } = useGLTF(asset.url);
-    const group = useRef<Group>(scene); // point directly to loaded scene
+// Subcomponent: only mounts when blobUrl is valid
+const GLTFWrapper = React.forwardRef<Group, { asset: Asset; blobUrl: string }>(
+  ({ asset, blobUrl }, ref) => {
+    const group = useRef<Group>(new Group());
+    const { scene } = useGLTF(blobUrl, true) as { scene: Group };
 
     useEffect(() => {
-      group.current.position.copy(asset.transform.position);
-      const r = asset.transform.rotation;
-      group.current.rotation.set(r.x, r.y, r.z);
-      group.current.scale.copy(asset.transform.scale);
+      const cloned = scene.clone();
+      group.current.clear();
+      group.current.add(cloned);
 
-      // Make children selectable and assign IDs
+      group.current.position.copy(asset.transform.position);
+      group.current.rotation.set(
+        asset.transform.rotation.x,
+        asset.transform.rotation.y,
+        asset.transform.rotation.z
+      );
+      group.current.scale.copy(asset.transform.scale);
+      // group.current
+      group.current.userData.id = asset.id;
+
+      console.log("group.current: ", group.current);
+
       group.current.traverse((child) => {
         child.userData.selectable = true;
         child.userData.id = asset.id;
       });
-    }, [asset]);
+
+      return () => {
+        group.current.remove(cloned);
+        URL.revokeObjectURL(blobUrl);
+      };
+    }, [scene]);
 
     useImperativeHandle(ref, () => group.current);
 
+    return <primitive object={group.current} />;
+  }
+);
+
+const GLTFModel = React.forwardRef<Group, { asset: Asset }>(
+  ({ asset }, ref) => {
+    const [blobUrl, setBlobUrl] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+      (async () => {
+        try {
+          const result = await getGLTFById(asset.id);
+          if (!result?.buffer) throw new Error("Missing buffer");
+          const url = URL.createObjectURL(new Blob([result.buffer]));
+          setBlobUrl(url);
+        } catch (e) {
+          console.error(e);
+          setError("Failed to load GLTF");
+        }
+      })();
+    }, [asset.id]);
+
+    if (error) {
+      return (
+        <mesh
+          position={[
+            asset.transform.position.x,
+            asset.transform.position.y,
+            asset.transform.position.z,
+          ]}
+        >
+          <boxGeometry args={[1, 1, 1]} />
+          <meshStandardMaterial color="red" />
+        </mesh>
+      );
+    }
+
+    if (!blobUrl) {
+      return (
+        <mesh
+          position={[
+            asset.transform.position.x,
+            asset.transform.position.y,
+            asset.transform.position.z,
+          ]}
+        >
+          <boxGeometry args={[1, 1, 1]} />
+          <meshStandardMaterial color="gray" />
+        </mesh>
+      );
+    }
+
     return (
-      <primitive object={group.current} />
+      <Suspense fallback={null}>
+        <GLTFWrapper asset={asset} blobUrl={blobUrl} ref={ref} />
+      </Suspense>
     );
   }
 );

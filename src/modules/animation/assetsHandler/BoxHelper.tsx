@@ -9,7 +9,6 @@ const BoundingBox = ({ object }: { object: Group }) => {
   useEffect(() => {
     if (!object) return;
 
-    console.log("Selected object for BoxHelper:", object);
     const helper = new BoxHelper(object, new Color("blue"));
     helperRef.current = helper;
     scene.add(helper);

@@ -16,7 +16,7 @@ const EnvironmentAndLights = () => {
         fadeStrength={1}
         followCamera={false}
       />
-      <OrbitControls />
+      <OrbitControls makeDefault/>
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
         <GizmoViewport
           axisColors={["#F64418", "#1ADF3E", "#1A9DDF"]}

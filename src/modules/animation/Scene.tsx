@@ -10,15 +10,19 @@ import { setupDeleteKeyHandler } from "./utils/setupDeleteKeyHandler";
 import { useAssetStore } from "./store/useAssetStore";
 
 const Scene = () => {
-  const { deleteAsset } = useAssetStore();
   const [selected, setSelected] = useState<string[]>([]);
   const selectedRefs = useRef<Group[]>([]);
   const [selectionBox, setSelectionBox] = useState<DOMRect | null>(null);
 
   useEffect(() => {
-    const cleanup = setupDeleteKeyHandler(() => selected, deleteAsset);
+    const { selectedAssets, deleteAsset } = useAssetStore.getState();
+    const cleanup = setupDeleteKeyHandler(
+      () => selectedAssets, // Get current selected IDs
+      deleteAsset // Pass the delete function
+    );
+
     return cleanup;
-  }, [selected, deleteAsset]);
+  }, []);
 
   const clickStart = useRef<{ x: number; y: number } | null>(null);
 
@@ -50,13 +54,13 @@ const Scene = () => {
   }, []);
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div style={{ width: "calc(100vw - 300px)", height: "100%" }}>
       <Canvas camera={{ position: [0, 2, 5], fov: 50 }} shadows>
         <EnvironmentAndLights />
         <SceneAssets selected={selected} selectedRefs={selectedRefs} />
         <BoxSelectHelper domRect={selectionBox} onSelect={setSelected} />
         {selectedRefs.current.length > 0 && (
-          <TransformControlsWrapper object={selectedRefs.current[0]} />
+          <TransformControlsWrapper object={selectedRefs.current[0]} assetId={selectedRefs.current[0].uuid}/>
         )}
       </Canvas>
       <BoxSelectOverlay onBoxSelect={setSelectionBox} />
