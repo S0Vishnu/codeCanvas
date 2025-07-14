@@ -5,12 +5,8 @@ import AssetUploader from "./assetsHandler/AssetUploader";
 const axisMap = { x: 0, y: 1, z: 2 } as const;
 
 const Properties = () => {
-  const {
-    assets,
-    updateAssetTransform,
-    selectedAssets,
-    handleAssetSelection,
-  } = useAssetStore();
+  const { assets, updateAssetTransform, selectedAssets, handleAssetSelection } =
+    useAssetStore();
 
   const handleInputChange = (
     id: string,
@@ -57,12 +53,12 @@ const Properties = () => {
       {/* Properties for Selected Assets */}
       {selectedAssetObjects.length > 0 ? (
         <div className="selected-properties">
-          <h3>Selected Properties</h3>
+          <p className="header">Selected Properties</p>
           {selectedAssetObjects.map((asset) => (
             <div key={asset.id} className="asset-properties">
-              <h4>{asset.name}</h4>
-              <div>
-                Position:
+              <h4 className="asset-name">Name : {asset.name.split(".")[0]}</h4>
+              <div className="asset-property-input-container">
+                <div className="title">Position:</div>
                 {["x", "y", "z"].map((axis) => (
                   <input
                     key={axis}
@@ -80,8 +76,8 @@ const Properties = () => {
                   />
                 ))}
               </div>
-              <div>
-                Rotation:
+              <div className="asset-property-input-container">
+                <div className="title">Rotation:</div>
                 {["x", "y", "z"].map((axis) => (
                   <input
                     key={axis}
@@ -99,8 +95,8 @@ const Properties = () => {
                   />
                 ))}
               </div>
-              <div>
-                Scale:
+              <div className="asset-property-input-container">
+                <div className="title">Scale:</div>
                 {["x", "y", "z"].map((axis) => (
                   <input
                     key={axis}
