@@ -1,6 +1,7 @@
 import { Vector3 } from "three";
 import { useAssetStore } from "./store/useAssetStore";
 import AssetUploader from "./assetsHandler/AssetUploader";
+import AxisInput from "./components/AxisInput";
 
 const axisMap = { x: 0, y: 1, z: 2 } as const;
 
@@ -60,57 +61,33 @@ const Properties = () => {
               <div className="asset-property-input-container">
                 <div className="title">Position:</div>
                 {["x", "y", "z"].map((axis) => (
-                  <input
-                    key={axis}
-                    type="number"
-                    step="0.1"
-                    value={asset.transform.position[axis as "x" | "y" | "z"]}
-                    onChange={(e) =>
-                      handleInputChange(
-                        asset.id,
-                        "position",
-                        axis as "x" | "y" | "z",
-                        parseFloat(e.target.value) || 0
-                      )
-                    }
+                  <AxisInput
+                    axis={axis as "x" | "y" | "z"}
+                    asset={asset}
+                    property={'position'}
+                    handleInputChange={handleInputChange}
                   />
                 ))}
               </div>
               <div className="asset-property-input-container">
                 <div className="title">Rotation:</div>
                 {["x", "y", "z"].map((axis) => (
-                  <input
-                    key={axis}
-                    type="number"
-                    step="0.1"
-                    value={asset.transform.rotation[axis as "x" | "y" | "z"]}
-                    onChange={(e) =>
-                      handleInputChange(
-                        asset.id,
-                        "rotation",
-                        axis as "x" | "y" | "z",
-                        parseFloat(e.target.value) || 0
-                      )
-                    }
+                  <AxisInput
+                    axis={axis as "x" | "y" | "z"}
+                    asset={asset}
+                    property={'rotation'}
+                    handleInputChange={handleInputChange}
                   />
                 ))}
               </div>
               <div className="asset-property-input-container">
                 <div className="title">Scale:</div>
                 {["x", "y", "z"].map((axis) => (
-                  <input
-                    key={axis}
-                    type="number"
-                    step="0.1"
-                    value={asset.transform.scale[axis as "x" | "y" | "z"]}
-                    onChange={(e) =>
-                      handleInputChange(
-                        asset.id,
-                        "scale",
-                        axis as "x" | "y" | "z",
-                        parseFloat(e.target.value) || 0
-                      )
-                    }
+                  <AxisInput
+                    axis={axis as "x" | "y" | "z"}
+                    asset={asset}
+                    property={'scale'}
+                    handleInputChange={handleInputChange}
                   />
                 ))}
               </div>
@@ -128,7 +105,7 @@ const Properties = () => {
           ))}
         </div>
       ) : (
-        <p>No asset selected</p>
+        <p className="no-selected-properties">No asset selected</p>
       )}
     </div>
   );

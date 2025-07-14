@@ -71,6 +71,10 @@
   }
 }
 
+.no-selected-properties{
+  padding: 12px;
+}
+
 .selected-properties {
   padding: 6px;
   .header{
@@ -117,5 +121,22 @@
         }
       }
     }
+  }
+}
+
+.input-with-dragger-container{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  input{
+    width: 100%;
+  }
+  .dragger{
+    height: 24px;
+    min-width: 24px;
+    background: #010101;
+    border-radius: 6px;
+    cursor: ew-resize;
   }
 }
