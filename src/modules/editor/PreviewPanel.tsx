@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useEditorStore } from "../../store/editorStore";
 import { buildPreviewHtml } from "../../utils/editorUtils";
 
@@ -11,7 +11,7 @@ function useDebouncedEffect(effect: () => void, deps: unknown[], delay: number) 
 }
 
 const PreviewPanel = () => {
-  const { code, previewKey } = useEditorStore();
+  const { code } = useEditorStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const clearLogs = useEditorStore(state => state.clearLogs);
 
