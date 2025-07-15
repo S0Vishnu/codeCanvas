@@ -11,6 +11,7 @@ const Pages = () => {
       path: "/three-js-animator-and-configurer",
     },
     // add more links here
+    { name: "Live HTML Editor", path: "/live-editor" },
   ];
 
   return (
