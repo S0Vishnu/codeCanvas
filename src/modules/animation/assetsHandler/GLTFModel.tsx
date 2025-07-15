@@ -31,8 +31,6 @@ const GLTFWrapper = React.forwardRef<Group, { asset: Asset; blobUrl: string }>(
       // group.current
       group.current.userData.id = asset.id;
 
-      console.log("group.current: ", group.current);
-
       group.current.traverse((child) => {
         child.userData.selectable = true;
         child.userData.id = asset.id;
@@ -63,7 +61,7 @@ const GLTFModel = React.forwardRef<Group, { asset: Asset }>(
           const url = URL.createObjectURL(new Blob([result.buffer]));
           setBlobUrl(url);
         } catch (e) {
-          console.error(e);
+          console.warn(e);
           setError("Failed to load GLTF");
         }
       })();
