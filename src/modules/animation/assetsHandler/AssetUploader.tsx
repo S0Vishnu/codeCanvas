@@ -19,7 +19,6 @@ const AssetUploader = () => {
       await saveGLTFToIndexedDB(id, buffer, file.name);
 
       addAsset({
-        id,
         name: file.name,
         transform: {
           position: { x: 0, y: 0, z: 0 },
