@@ -52,8 +52,8 @@
   transition: border 0.2s;
 }
 .editor-tabs button.active {
-  border-bottom: 2px solid #4fc3f7;
   color: #4fc3f7;
+  background: #4fc2f73b;
 }
 .preview-panel {
   width: 100%;

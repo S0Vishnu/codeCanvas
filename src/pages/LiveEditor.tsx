@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import "../styles/editor.css";
-import EditorPanel from "../components/editor/EditorPanel";
-import PreviewPanel from "../components/editor/PreviewPanel";
-import ConsolePanel from "../components/editor/ConsolePanel";
 import { useEditorStore } from "../store/editorStore";
+import EditorPanel from "../modules/editor/EditorPanel";
+import PreviewPanel from "../modules/editor/PreviewPanel";
+import ConsolePanel from "../modules/editor/ConsolePanel";
 
 const LiveEditor = () => {
   const { addLog, clearLogs } = useEditorStore();
