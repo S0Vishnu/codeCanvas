@@ -12,6 +12,7 @@ const Pages = () => {
     },
     // add more links here
     { name: "Live HTML Editor", path: "/live-editor" },
+    { name: "Image Compressor", path: "/image-compressor" },
   ];
 
   return (

@@ -1,0 +1,244 @@
+.image-compressor-container {
+  min-height: 100vh;
+  padding: 1rem;
+  border: 2px dashed #4b5563;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+
+  &.dragging {
+    background-color: #191919;
+  }
+
+  .title {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #f3f4f6;
+    margin-left: 46px;
+  }
+
+  .controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      color: #d1d5db;
+    }
+
+    .format-select,
+    .inputs {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .format-select select {
+      margin-top: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      background-color: #374151;
+      border: 1px solid #4b5563;
+      border-radius: 0.25rem;
+      color: #f9fafb;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+
+      .btn {
+        padding: 0.3rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        color: #f9fafb;
+        border: none;
+        outline: none;
+
+        &.compress {
+          background-color: #16a34a;
+
+          &:hover {
+            background-color: #15803d;
+          }
+        }
+
+        &.zip {
+          background-color: #2563eb;
+
+          &:hover {
+            background-color: #1e40af;
+          }
+        }
+
+        &.clear {
+          background-color: #dc2626;
+
+          &:hover {
+            background-color: #b91c1c;
+          }
+        }
+
+        &.download {
+          background-color: #3b82f6;
+
+          &:hover {
+            background-color: #2563eb;
+          }
+        }
+      }
+    }
+
+    .stats {
+      font-size: 0.875rem;
+      color: #d1d5db;
+    }
+  }
+
+  .image-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    margin-top: 2rem;
+  }
+
+  .image-card {
+    background: #374151;
+    border: 1px solid #4b5563;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+
+    img {
+      width: 100%;
+      object-fit: cover;
+      border: 1px solid #6b7280;
+    }
+
+    h2,
+    p {
+      color: #f9fafb;
+      font-size: 0.875rem;
+    }
+
+    h2 {
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+
+    p {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+.file-input-wrapper {
+  position: relative;
+  display: inline-block;
+
+  .file-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background-color: #2563eb;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #1e40af;
+    }
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+}
+
+.custom-range {
+  -webkit-appearance: none;
+  width: 200px;
+  height: 18px;
+  background: #4b5563;
+  border-radius: 3px;
+  cursor: pointer;
+  outline: none;
+  margin: 0.5rem 0;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 4px;
+    background: #2563eb;
+    border: 2px solid white;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: #1e40af;
+    }
+  }
+
+  &::-webkit-slider-runnable-track {
+    height: 18px;
+    background: #333333;
+    border-radius: 3px;
+  }
+
+  &::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: #2563eb;
+    border: 2px solid white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: #1e40af;
+    }
+  }
+
+  &::-moz-range-track {
+    height: 6px;
+    background: #9ca3af;
+    border-radius: 3px;
+  }
+
+  &::-ms-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: #2563eb;
+    border: 2px solid white;
+    cursor: pointer;
+  }
+
+  &::-ms-track {
+    height: 6px;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+
+  &::-ms-fill-lower {
+    background: #9ca3af;
+    border-radius: 3px;
+  }
+
+  &::-ms-fill-upper {
+    background: #9ca3af;
+    border-radius: 3px;
+  }
+}
