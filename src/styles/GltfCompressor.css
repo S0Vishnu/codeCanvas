@@ -1,0 +1,71 @@
+.compressor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 16px;
+  gap: 16px;
+  background: #1e1e1e; /* Dark background */
+  color: #f0f0f0; /* Light text */
+}
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  background: #2c2c2c; /* Darker toolbar */
+  border-radius: 8px;
+}
+
+.toolbar input[type="file"] {
+  padding: 8px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #333;
+  color: #f0f0f0;
+}
+
+.toolbar .btn {
+  padding: 8px 16px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.toolbar .btn:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.toolbar .btn:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.stats-panel {
+  padding: 12px;
+  background: #2a2a2a; /* Dark stats background */
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.stats-panel h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #f0f0f0;
+}
+
+.stats-panel p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.viewer {
+  flex: 1;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: #111; /* Dark 3D canvas background */
+}
