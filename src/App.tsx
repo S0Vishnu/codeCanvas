@@ -19,8 +19,8 @@ function App() {
         <Route path="/three-js-animator-and-configurer" element={<AnimationEditor />} />
         <Route path="/live-editor" element={<LiveEditor />} />
         <Route path="/image-compressor" element={<ImageCompressor />} />
-        <Route path="/image-converter" element={<BatchImageConverter />} />
         <Route path="/gltf-compressor" element={<GLTFCompressor />} />
+        <Route path="/image-converter" element={<BatchImageConverter />} />
       </Routes>
     </>
   );
