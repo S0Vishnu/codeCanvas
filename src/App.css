@@ -17,3 +17,35 @@
   margin-bottom: 12px;
   margin-left: 40px;
 }
+
+
+::-webkit-scrollbar,
+.uploaded-images .images-grid::-webkit-scrollbar,
+.results .images-grid::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track,
+.uploaded-images .images-grid::-webkit-scrollbar-track,
+.results .images-grid::-webkit-scrollbar-track {
+  background: rgba(30, 30, 30, 0.2);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-thumb,
+.uploaded-images .images-grid::-webkit-scrollbar-thumb,
+.results .images-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  border: 3px solid rgba(30, 30, 30, 0.2);
+  backdrop-filter: blur(8px);
+  transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover,
+.uploaded-images .images-grid::-webkit-scrollbar-thumb:hover,
+.results .images-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
