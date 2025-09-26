@@ -4,14 +4,19 @@
     align-items: center;
     gap: 20px;
     padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    .container {
+        display: flex;
+        justify-content: space-between;
+        gap: 10vw;
+    }
 }
 
 .chess-title {
     font-size: 2rem;
     font-weight: bold;
     color: #ffffff;
-    text-shadow: 0 0 10px rgba(0,0,0,0.7);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 }
 
 .chess-info {
@@ -19,6 +24,15 @@
     gap: 30px;
     color: #fff;
     font-weight: 500;
+}
+
+.chess-moves{
+    max-height: 70vh;
+    overflow: auto;
+    h2{
+        position: absolute;
+        top: 80px;
+    }
 }
 
 .chess-moves table {
@@ -32,16 +46,14 @@
 .chess-moves td {
     padding: 6px 12px;
     border-radius: 8px;
+    margin: 2px;
 }
 
 .chess-moves th {
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(5px);
-}
-
-.chess-moves td {
-    background: rgba(255, 255, 255, 0.1);
-    margin: 2px;
+    position: sticky;
+    top: 0;
 }
 
 .chess-button {
@@ -55,6 +67,7 @@
     cursor: pointer;
     backdrop-filter: blur(5px);
     transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .chess-button:hover {
@@ -66,11 +79,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 20px;
     padding: 50px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(0,0,0,0.3));
-    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.3));
     backdrop-filter: blur(10px);
+    height: 100vh;
 }
 
 .chess-controls {
@@ -84,7 +98,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -98,7 +112,7 @@
     border-radius: 20px;
     text-align: center;
     color: #fff;
-    box-shadow: 0 0 30px rgba(0,0,0,0.7);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
 }
 
 .chess-over-content h2 {

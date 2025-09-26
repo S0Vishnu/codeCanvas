@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Chess } from "chess.js";
+import { Chess, Move } from "chess.js";
 import { Chessboard, type PieceDropHandlerArgs } from "react-chessboard";
 import Confetti from "react-confetti"; // npm i react-confetti
 import "../styles/games/ChessGame.css";
@@ -52,11 +52,26 @@ export default function ChessGame() {
         if (timerRef.current) clearInterval(timerRef.current);
     };
 
+    function updateMoves(prev: MoveEntry[], result: Move): MoveEntry[] {
+        if (result.color === "w") {
+            // Always start new row for White
+            return [...prev, { white: result.san, black: "" }];
+        } else {
+            // Fill Black into the latest row
+            const last = prev[prev.length - 1];
+            if (last) {
+                return [...prev.slice(0, -1), { ...last, black: result.san }];
+            }
+            // If no White move yet, ignore (illegal case)
+            return prev;
+        }
+    }
+
     const onPieceDrop = ({ sourceSquare, targetSquare }: PieceDropHandlerArgs) => {
         if (!targetSquare) return false;
 
-        // Only allow player to move White
-        if (game.turn() !== "w") return false;
+        // In VS_COMPUTER mode, only allow White (human) to move
+        if (gameMode === "VS_COMPUTER" && game.turn() !== "w") return false;
 
         const move = { from: sourceSquare, to: targetSquare, promotion: "q" };
         const g = new Chess(game.fen());
@@ -64,8 +79,17 @@ export default function ChessGame() {
 
         if (result) {
             setGame(g);
-            setMoves((prev) => [...prev, { white: result.san, black: "" }]);
-            setTimeout(handleComputerMove, 500); // computer move
+
+            setMoves((prev) => updateMoves(prev, result));
+
+            // If playing against computer, let it respond
+            if (gameMode === "VS_COMPUTER" && result.color === "w") {
+                setTimeout(handleComputerMove, 500);
+            }
+
+            // Toggle turn
+            setTurn(g.turn() as "w" | "b");
+
             return true;
         }
 
@@ -90,14 +114,7 @@ export default function ChessGame() {
             });
 
             if (result) {
-                setMoves((prev) => {
-                    const last = prev[prev.length - 1];
-                    if (last && last.black === "") {
-                        // fill the Black move in the last entry
-                        return [...prev.slice(0, -1), { white: last.white, black: result.san }];
-                    }
-                    return [...prev, { white: "", black: result.san }];
-                });
+                setMoves((prev) => updateMoves(prev, result));
             }
 
             return newGame;
@@ -151,40 +168,45 @@ export default function ChessGame() {
                 </p>
             </div>
 
-            <Chessboard
-                options={{
-                    position: game.fen(),
-                    onPieceDrop: onPieceDrop,
-                    boardStyle: {
-                        borderRadius: "20px",
-                        boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
-                        background:
-                            "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))",
-                        backdropFilter: "blur(10px)",
-                        width: "500px",
-                    },
-                    squareStyles: generateSquareStyles(game),
-                }}
-            />
+            <div className="container">
+                <Chessboard
+                    options={{
+                        position: game.fen(),
+                        onPieceDrop: onPieceDrop,
+                        darkSquareStyle: { ...{ backgroundColor: "#2d3436" } },
+                        lightSquareStyle: { ...{ backgroundColor: "#dfe6e9" } },
+                        squareStyle: { ...{ borderRadius: "5px", margin: "3px" } },
+                        dropSquareStyle: { ...{ borderRadius: "5px", margin: "3px" } },
+                        boardStyle: {
+                            borderRadius: "6px",
+                            boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+                            width: "70vh",
+                            border: "8px solid #dfe6e9",
+                            outline: "8px solid #2d3436",
+                        },
+                        squareStyles: generateSquareStyles(game),
+                    }}
+                />
 
-            <div className="chess-moves">
-                <h2>Moves</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>White</th>
-                            <th>Black</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {moves.map((m, i) => (
-                            <tr key={i}>
-                                <td>{m.white}</td>
-                                <td>{m.black}</td>
+                <div className="chess-moves">
+                    <h2>Moves</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>White</th>
+                                <th>Black</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {moves.map((m, i) => (
+                                <tr key={i}>
+                                    <td>{m.white}</td>
+                                    <td>{m.black}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {game.isGameOver() && (
