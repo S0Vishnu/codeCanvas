@@ -7,7 +7,7 @@
     align-items: center;
     justify-content: space-between;
     font-size: 2rem;
-    margin-bottom: 3rem;
+    margin-bottom: 1.5rem;
     color: #f5f5f5;
 }
 
@@ -21,6 +21,20 @@
     color: #f5f5f5;
     backdrop-filter: blur(8px);
     font-size: 1rem;
+}
+
+.category-toggle {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    button {
+        padding: 4px 12px;
+        border-radius: 20px;
+        &:hover {
+            background: #0884f8;
+        }
+    }
 }
 
 .cards-grid {
