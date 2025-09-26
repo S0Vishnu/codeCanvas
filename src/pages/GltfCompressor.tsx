@@ -1,316 +1,351 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, type DragEvent } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { OrbitControls, Stage, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import "../styles/GltfCompressor.css";
+import ReactComponentGenerator from "../modules/gltf/ReactComponentGenerator";
+import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
-type UploadedModelProps = {
-  url: string;
+type UploadedModelProps = { url: string };
+const UploadedModel = ({ url }: UploadedModelProps) => {
+    const { scene } = useGLTF(url, true);
+    return <primitive object={scene} />;
 };
 
-const UploadedModel = ({ url }: UploadedModelProps) => {
-  const { scene } = useGLTF(url, true);
-  return <primitive object={scene} />;
+type CompressionStats = {
+    originalVerts: number;
+    mergedVerts: number;
+    originalGeom: number;
+    mergedGeom: number;
+    textureSize: number;
+    reduction: number;
 };
 
 export default function GLTFCompressorPage() {
-  const [modelUrl, setModelUrl] = useState<string | null>(null);
-  const [stats, setStats] = useState<any | null>(null);
-  const [compressedScene, setCompressedScene] = useState<THREE.Group | null>(null);
-  const [isCompressing, setIsCompressing] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const sceneRef = useRef<THREE.Scene | null>(null);
+    const [modelUrl, setModelUrl] = useState<string | null>(null);
+    const [stats, setStats] = useState<CompressionStats | null>(null);
+    const [compressedScene, setCompressedScene] = useState<THREE.Group | null>(null);
+    const [isCompressing, setIsCompressing] = useState(false);
+    const [dragOver, setDragOver] = useState(false);
+    const sceneRef = useRef<THREE.Scene | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [compressionStep, setCompressionStep] = useState<string | null>(null);
 
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setModelUrl(url);
-      setCompressedScene(null);
-      setStats(null);
-    }
-  };
+    // Handle file selection
+    const handleFile = (file: File) => {
+        const url = URL.createObjectURL(file);
+        setModelUrl(url);
+        setCompressedScene(null);
+        setStats(null);
+    };
 
-  const normalizeGeometry = (geom: THREE.BufferGeometry) => {
-    if (!geom.getAttribute("position")) return null;
+    const openFileDialog = () => {
+        fileInputRef.current?.click();
+    };
 
-    // Ensure we have normals
-    if (!geom.getAttribute("normal")) {
-      geom.computeVertexNormals();
-    }
-
-    // Ensure we have UVs (even if dummy)
-    if (!geom.getAttribute("uv")) {
-      const count = geom.getAttribute("position").count;
-      const dummyUVs = new Float32Array(count * 2);
-      geom.setAttribute("uv", new THREE.BufferAttribute(dummyUVs, 2));
-    }
-
-    // Clear morph attributes
-    geom.morphAttributes = {};
-
-    return geom;
-  };
-
-  const compressTexture = (texture: THREE.Texture): Promise<THREE.Texture> => {
-    return new Promise((resolve) => {
-      if (!texture.image) {
-        resolve(texture);
-        return;
-      }
-
-      // If the texture is already compressed, don't recompress
-      if (texture.userData.compressed) {
-        resolve(texture);
-        return;
-      }
-
-      const img = texture.image;
-      
-      // Create offscreen canvas for compression
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      
-      if (!ctx) {
-        resolve(texture);
-        return;
-      }
-
-      // Calculate dimensions while maintaining aspect ratio
-      const maxDimension = 1024;
-      let width = img.width;
-      let height = img.height;
-
-      if (width > height && width > maxDimension) {
-        height = Math.round((height * maxDimension) / width);
-        width = maxDimension;
-      } else if (height > maxDimension) {
-        width = Math.round((width * maxDimension) / height);
-        height = maxDimension;
-      }
-
-      width = Math.max(128, width);
-      height = Math.max(128, height);
-
-      canvas.width = width;
-      canvas.height = height;
-
-      // Draw image to canvas
-      ctx.drawImage(img, 0, 0, width, height);
-
-      // Check if the image has transparency
-      let imageData, hasTransparency = false;
-      try {
-        imageData = ctx.getImageData(0, 0, width, height);
-        for (let i = 3; i < imageData.data.length; i += 4) {
-          if (imageData.data[i] < 255) {
-            hasTransparency = true;
-            break;
-          }
+    const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragOver(false);
+        if (e.dataTransfer.files.length > 0) {
+            const file = e.dataTransfer.files[0];
+            if (file.name.endsWith(".glb") || file.name.endsWith(".gltf")) {
+                handleFile(file);
+            } else alert("Only .glb or .gltf files are supported.");
         }
-      } catch (e) {
-        console.log('e: ', e);
-        // Cross-origin issue, can't check transparency
-        console.warn("Could not check image transparency due to CORS restrictions");
-      }
+    };
 
-      // Use appropriate format based on transparency
-      const mimeType = hasTransparency ? 'image/png' : 'image/jpeg';
-      const quality = hasTransparency ? 0.9 : 0.8;
+    const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragOver(true);
+    };
+    const handleDragLeave = () => setDragOver(false);
 
-      // Convert to data URL
-      const dataUrl = canvas.toDataURL(mimeType, quality);
-      
-      // Create a new image to load the compressed data
-      const newImg = new Image();
-      newImg.onload = () => {
-        const compressedTexture = new THREE.Texture(newImg);
-        compressedTexture.colorSpace = THREE.SRGBColorSpace;
-        compressedTexture.flipY = false;
-        compressedTexture.needsUpdate = true;
-        compressedTexture.userData.compressed = true;
-        resolve(compressedTexture);
-      };
-      
-      newImg.onerror = () => {
-        console.error("Failed to load compressed image");
-        resolve(texture); // Fallback to original texture
-      };
-      
-      newImg.src = dataUrl;
-    });
-  };
-
-  const handleCompress = async () => {
-    if (!sceneRef.current) return;
-    
-    setIsCompressing(true);
-    
-    // Small delay to allow UI to update
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    const meshes: THREE.Mesh[] = [];
-    sceneRef.current.traverse((obj) => {
-      if ((obj as THREE.Mesh).isMesh) {
-        meshes.push(obj as THREE.Mesh);
-      }
-    });
-    
-    if (meshes.length === 0) {
-      setIsCompressing(false);
-      return;
-    }
-
-    // Group geometries by material to preserve textures
-    const geometryGroups: {[key: string]: THREE.BufferGeometry[]} = {};
-    const materialMap: {[key: string]: THREE.Material} = {};
-    
-    for (const mesh of meshes) {
-      const material = Array.isArray(mesh.material) 
-        ? mesh.material[0] 
-        : mesh.material;
-      
-      const materialKey = (material as any).uuid || "default";
-      
-      if (!geometryGroups[materialKey]) {
-        geometryGroups[materialKey] = [];
-        materialMap[materialKey] = material;
-      }
-      
-      const clonedGeometry = mesh.geometry.clone().applyMatrix4(mesh.matrixWorld);
-      const normalizedGeometry = normalizeGeometry(clonedGeometry);
-      
-      if (normalizedGeometry) {
-        geometryGroups[materialKey].push(normalizedGeometry);
-      }
-    }
-
-    // Create a new group for the compressed scene
-    const compressedGroup = new THREE.Group();
-    
-    // Process each material group
-    for (const materialKey in geometryGroups) {
-      if (geometryGroups[materialKey].length === 0) continue;
-      
-      // Merge geometries with the same material
-      const mergedGeometry = BufferGeometryUtils.mergeGeometries(
-        geometryGroups[materialKey], 
-        false
-      );
-      
-      if (!mergedGeometry) continue;
-      
-      let material = materialMap[materialKey];
-      
-      // Compress texture if it exists
-      if ((material as THREE.MeshStandardMaterial).map) {
-        try {
-          const compressedTexture = await compressTexture(
-            (material as THREE.MeshStandardMaterial).map!
-          );
-          
-          material = material.clone();
-          (material as THREE.MeshStandardMaterial).map = compressedTexture;
-          (material as THREE.MeshStandardMaterial).needsUpdate = true;
-        } catch (error) {
-          console.error("Error compressing texture:", error);
+    const normalizeGeometry = (geom: THREE.BufferGeometry) => {
+        if (!geom.getAttribute("position")) return null;
+        if (!geom.getAttribute("normal")) geom.computeVertexNormals();
+        if (!geom.getAttribute("uv")) {
+            const count = geom.getAttribute("position").count;
+            geom.setAttribute("uv", new THREE.BufferAttribute(new Float32Array(count * 2), 2));
         }
-      }
-      
-      const mergedMesh = new THREE.Mesh(mergedGeometry, material);
-      compressedGroup.add(mergedMesh);
-    }
+        geom.morphAttributes = {};
+        return geom;
+    };
 
-    // Calculate statistics
-    const originalVerts = meshes.reduce(
-      (sum, m) => sum + m.geometry.attributes.position.count,
-      0
-    );
-    
-    const mergedVerts = compressedGroup.children.reduce(
-      (sum, child) => sum + (child as THREE.Mesh).geometry.attributes.position.count,
-      0
-    );
-    
-    const originalGeom = meshes.length;
-    const mergedGeom = compressedGroup.children.length;
-    
-    // Estimate texture size
-    let textureSize = 0;
-    if (meshes[0].material && (meshes[0].material as THREE.MeshStandardMaterial).map) {
-      const map = (meshes[0].material as THREE.MeshStandardMaterial).map;
-      if (map && map.image) {
-        textureSize = map.image.width * map.image.height;
-      }
-    }
+    const compressTexture = async (texture: THREE.Texture) => {
+        const img = texture.image;
+        if (
+            !(
+                img instanceof HTMLImageElement ||
+                img instanceof HTMLCanvasElement ||
+                img instanceof ImageBitmap ||
+                img instanceof HTMLVideoElement
+            )
+        ) {
+            console.warn("Unsupported texture image type:", img);
+            return texture;
+        }
 
-    setStats({
-      originalVerts,
-      mergedVerts,
-      originalGeom,
-      mergedGeom,
-      textureSize,
-      reduction: Math.round((1 - mergedVerts / originalVerts) * 100)
-    });
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return texture;
 
-    setCompressedScene(compressedGroup);
-    setIsCompressing(false);
-  };
+        const maxDim = 1024;
+        let width = img.width;
+        let height = img.height;
 
-  // Clear the compressed scene when a new model is uploaded
-  useEffect(() => {
-    if (modelUrl) {
-      setCompressedScene(null);
-    }
-  }, [modelUrl]);
+        if (width > height && width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+        } else if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+        }
+        width = Math.max(128, width);
+        height = Math.max(128, height);
+        canvas.width = width;
+        canvas.height = height;
 
-  return (
-    <div className="compressor-container">
-      <div className="toolbar">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".glb,.gltf"
-          onChange={handleUpload}
-        />
-        <button 
-          className={`btn ${isCompressing ? 'compressing' : ''}`} 
-          onClick={handleCompress} 
-          disabled={!modelUrl || isCompressing}
+        ctx.drawImage(img as CanvasImageSource, 0, 0, width, height);
+
+        // Create a THREE.Texture directly from the canvas
+        const compressed = new THREE.Texture(canvas);
+        compressed.flipY = false;
+        compressed.colorSpace = THREE.SRGBColorSpace;
+        compressed.needsUpdate = true;
+
+        return compressed;
+    };
+
+    const compressMaterialTextures = async (material: THREE.Material) => {
+        const mat = material.clone() as THREE.MeshStandardMaterial;
+        const textureProps = [
+            "map",
+            "aoMap",
+            "emissiveMap",
+            "metalnessMap",
+            "roughnessMap",
+            "normalMap",
+            "displacementMap",
+            "alphaMap",
+        ] as const;
+
+        for (const prop of textureProps) {
+            const tex = (mat as unknown as Record<string, THREE.Texture | undefined>)[prop];
+            if (tex) {
+                const compressed = await compressTexture(tex);
+                (mat as unknown as Record<string, THREE.Texture | undefined>)[prop] = compressed;
+                compressed.needsUpdate = true;
+            }
+        }
+        return mat;
+    };
+
+    const handleCompress = async () => {
+        if (!sceneRef.current) return;
+
+        setIsCompressing(true);
+        setCompressionStep("Collecting meshes...");
+        await new Promise((r) => setTimeout(r, 50)); // allow overlay render
+
+        const meshes: THREE.Mesh[] = [];
+        sceneRef.current.traverse((obj) => {
+            if ((obj as THREE.Mesh).isMesh) meshes.push(obj as THREE.Mesh);
+        });
+
+        if (!meshes.length) {
+            setCompressionStep(null);
+            return setIsCompressing(false);
+        }
+
+        setCompressionStep(`Found ${meshes.length} meshes. Grouping geometries...`);
+
+        const geometryGroups: Record<string, THREE.BufferGeometry[]> = {};
+        const materialMap: Record<string, THREE.Material> = {};
+
+        for (const mesh of meshes) {
+            const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+            for (const material of materials) {
+                const key = material.uuid || "default";
+                if (!geometryGroups[key]) {
+                    geometryGroups[key] = [];
+                    materialMap[key] = material;
+                }
+                const geom = normalizeGeometry(
+                    mesh.geometry.clone().applyMatrix4(mesh.matrixWorld)
+                );
+                if (geom) geometryGroups[key].push(geom);
+            }
+        }
+
+        const compressedGroup = new THREE.Group();
+        let totalTextureSize = 0;
+
+        const keys = Object.keys(geometryGroups);
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            const geoms = geometryGroups[key].filter(Boolean);
+            if (!geoms.length) continue;
+
+            setCompressionStep(`Merging geometry ${i + 1} of ${keys.length}...`);
+            await new Promise((r) => setTimeout(r, 20)); // let UI repaint
+
+            let mergedGeometry = BufferGeometryUtils.mergeGeometries(geoms, false);
+
+            if (!mergedGeometry) continue;
+
+            mergedGeometry = mergeVertices(mergedGeometry, 1e-5);
+
+            setCompressionStep(`Compressing textures for material ${i + 1}...`);
+            let material = materialMap[key];
+            material = await compressMaterialTextures(material);
+
+            const mesh = new THREE.Mesh(mergedGeometry, material);
+            compressedGroup.add(mesh);
+
+            // sum texture sizes
+            const mat = material as THREE.MeshStandardMaterial;
+            const textureProps = [
+                "map",
+                "aoMap",
+                "emissiveMap",
+                "metalnessMap",
+                "roughnessMap",
+                "normalMap",
+                "displacementMap",
+                "alphaMap",
+            ] as const;
+            for (const prop of textureProps) {
+                const tex = (mat as unknown as Record<string, THREE.Texture | undefined>)[prop];
+                if (tex?.image) totalTextureSize += tex.image.width * tex.image.height;
+            }
+        }
+
+        const originalVerts = meshes.reduce(
+            (sum, m) => sum + m.geometry.attributes.position.count,
+            0
+        );
+        const mergedVerts = compressedGroup.children.reduce(
+            (sum, c) => sum + (c as THREE.Mesh).geometry.attributes.position.count,
+            0
+        );
+
+        setStats({
+            originalVerts,
+            mergedVerts,
+            originalGeom: meshes.length,
+            mergedGeom: compressedGroup.children.length,
+            textureSize: totalTextureSize,
+            reduction: Math.round((1 - mergedVerts / originalVerts) * 100),
+        });
+
+        // Reposition group so its center is at 0,0,0
+        compressedGroup.updateMatrixWorld(true);
+        const bbox = new THREE.Box3().setFromObject(compressedGroup);
+        const center = new THREE.Vector3();
+        bbox.getCenter(center);
+
+        // Center at origin
+        compressedGroup.position.sub(center);
+
+        // Optional: keep top of model at y=0
+        const size = new THREE.Vector3();
+        bbox.getSize(size);
+        compressedGroup.position.y += size.y / 2;
+
+        setCompressedScene(compressedGroup);
+        setCompressionStep(null);
+        requestAnimationFrame(() => setIsCompressing(false));
+    };
+
+    const clearScene = () => {
+        setModelUrl(null);
+        setCompressedScene(null);
+        setStats(null);
+    };
+
+    return (
+        <div
+            className={`compressor-container ${dragOver ? "drag-over" : ""}`}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
         >
-          {isCompressing ? 'Compressing...' : 'Compress'}
-        </button>
-      </div>
-      
-      {stats && (
-        <div className="stats-panel">
-          <h3>Compression Results</h3>
-          <p>Original Vertices: {stats.originalVerts.toLocaleString()}</p>
-          <p>Merged Vertices: {stats.mergedVerts.toLocaleString()}</p>
-          <p>Vertex Reduction: {stats.reduction}%</p>
-          <p>Original Geometries: {stats.originalGeom}</p>
-          <p>Merged Geometries: {stats.mergedGeom}</p>
-          <p>Texture Size: {stats.textureSize.toLocaleString()}px</p>
+            <Canvas className="viewer" onCreated={({ scene }) => (sceneRef.current = scene)}>
+                <ambientLight intensity={0.5} />
+                <directionalLight position={[10, 10, 10]} intensity={1} />
+                <Stage adjustCamera={true} intensity={0.5}>
+                    <group position={[0, 0, 0]}>
+                        {compressedScene ? (
+                            <primitive object={compressedScene} />
+                        ) : modelUrl ? (
+                            <UploadedModel url={modelUrl} />
+                        ) : null}
+                    </group>
+                </Stage>
+                <OrbitControls />
+            </Canvas>
+
+            {/* Overlay before any file is loaded */}
+            {!modelUrl && (
+                <div className="overlay" onClick={openFileDialog}>
+                    <p>
+                        {dragOver
+                            ? "Release to upload your .glb/.gltf file"
+                            : "Click or drag & drop a .glb/.gltf file here"}
+                    </p>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".glb,.gltf"
+                        style={{ display: "none" }}
+                        onChange={(e) => e.target.files && handleFile(e.target.files[0])}
+                    />
+                </div>
+            )}
+
+            {/* Compress Button */}
+            {modelUrl && !isCompressing && (
+                <button className="btn compress-btn" onClick={handleCompress}>
+                    Compress
+                </button>
+            )}
+
+            {/* Clear Scene Button */}
+            {modelUrl && (
+                <button className="btn clear-btn" onClick={clearScene}>
+                    Clear Scene
+                </button>
+            )}
+
+            {modelUrl && <ReactComponentGenerator url={modelUrl} />}
+
+            {/* Compressing Overlay */}
+            {isCompressing && <div className="compressing-overlay">Compressing...</div>}
+
+            {/* Stats Panel */}
+            {stats && (
+                <div className="stats-panel">
+                    <h3>Compression Results</h3>
+                    <p>Original Vertices: {stats.originalVerts.toLocaleString()}</p>
+                    <p>Merged Vertices: {stats.mergedVerts.toLocaleString()}</p>
+                    <p>Vertex Reduction: {stats.reduction}%</p>
+                    <p>Original Geometries: {stats.originalGeom}</p>
+                    <p>Merged Geometries: {stats.mergedGeom}</p>
+                    <p>Total Texture Size: {stats.textureSize.toLocaleString()}px</p>
+                </div>
+            )}
+            {isCompressing && (
+                <div
+                    className="compressing-overlay"
+                    style={{ display: "flex", flexDirection: "column" }}
+                >
+                    <div>Compressing...</div>
+                    {compressionStep && (
+                        <p style={{ marginTop: 10, fontSize: "1rem" }}>{compressionStep}</p>
+                    )}
+                </div>
+            )}
         </div>
-      )}
-      
-      <Canvas
-        className="viewer"
-        onCreated={({ scene }) => {
-          sceneRef.current = scene;
-        }}
-      >
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 10]} intensity={1} />
-        
-        {compressedScene ? (
-          <primitive object={compressedScene} />
-        ) : modelUrl ? (
-          <UploadedModel url={modelUrl} />
-        ) : null}
-        
-        <OrbitControls />
-      </Canvas>
-    </div>
-  );
+    );
 }
