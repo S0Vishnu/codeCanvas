@@ -503,6 +503,7 @@
 }
 
 .btn.upload {
+  position: unset;
   background: #2563eb;
 }
 
