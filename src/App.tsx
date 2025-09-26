@@ -9,6 +9,7 @@ import ImageCompressor from "./pages/ImageCompressor";
 import GLTFCompressor from "./pages/GltfCompressor";
 import BatchImageConverter from "./pages/ImageConverter";
 import ImageEnhancer from "./pages/ImageEnhancer";
+import ChessGame from "./games/Chess";
 
 function App() {
     return (
@@ -22,20 +23,9 @@ function App() {
                 <Route path="/image-compressor" element={<ImageCompressor />} />
                 <Route path="/gltf-compressor" element={<GLTFCompressor />} />
                 <Route path="/image-converter" element={<BatchImageConverter />} />
-                <Route
-                    path="/image-enhancer"
-                    element={
-                        <ImageEnhancer
-                            src=""
-                            width={900}
-                            height={600}
-                            onExport={(dataUrl) => {
-                                console.log("Exported dataUrl length:", dataUrl.length);
-                            }}
-                            initial={{ zoom: 1, brightness: 0 }}
-                        />
-                    }
-                />
+                <Route path="/image-enhancer" element={<ImageEnhancer />} />
+                {/* games */}
+                <Route path="/chess" element={<ChessGame />} />
             </Routes>
         </>
     );
