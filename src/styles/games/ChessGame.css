@@ -5,6 +5,8 @@
     gap: 20px;
     padding: 20px;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    justify-content: space-evenly;
     .container {
         display: flex;
         justify-content: space-between;
@@ -27,12 +29,14 @@
 }
 
 .chess-moves{
+    position: relative;
     max-height: 70vh;
-    overflow: auto;
-    h2{
-        position: absolute;
-        top: 80px;
-    }
+}
+
+.table-container{
+    max-height: calc(100% - 36px);
+    overflow: hidden;
+    overflow-y: auto;
 }
 
 .chess-moves table {

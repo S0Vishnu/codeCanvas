@@ -64,6 +64,12 @@ const Pages = () => {
         // Projects (Coming Soon)
         { name: "Coming Soon", path: "/", category: "Projects" },
         // Games
+        {
+            name: "Chess",
+            path: "/chess",
+            category: "Games",
+            thumbnail: "/thumbnails/chess.png",
+        },
         { name: "Coming Soon", path: "/", category: "Games" },
     ];
 

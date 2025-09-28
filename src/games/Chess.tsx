@@ -177,6 +177,7 @@ export default function ChessGame() {
                         lightSquareStyle: { ...{ backgroundColor: "#dfe6e9" } },
                         squareStyle: { ...{ borderRadius: "5px", margin: "3px" } },
                         dropSquareStyle: { ...{ borderRadius: "5px", margin: "3px" } },
+                        darkSquareNotationStyle: { ...{ borderRadius: "5px" } },
                         boardStyle: {
                             borderRadius: "6px",
                             boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
@@ -190,22 +191,24 @@ export default function ChessGame() {
 
                 <div className="chess-moves">
                     <h2>Moves</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>White</th>
-                                <th>Black</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {moves.map((m, i) => (
-                                <tr key={i}>
-                                    <td>{m.white}</td>
-                                    <td>{m.black}</td>
+                    <div className="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>White</th>
+                                    <th>Black</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {moves.map((m, i) => (
+                                    <tr key={i}>
+                                        <td>{m.white}</td>
+                                        <td>{m.black}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

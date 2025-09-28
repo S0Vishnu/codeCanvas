@@ -26,6 +26,7 @@ function App() {
                 <Route path="/image-enhancer" element={<ImageEnhancer />} />
                 {/* games */}
                 <Route path="/chess" element={<ChessGame />} />
+                {/* projects */}
             </Routes>
         </>
     );
