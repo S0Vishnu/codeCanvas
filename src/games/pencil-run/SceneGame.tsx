@@ -96,7 +96,7 @@ export function GameScene({
             }
 
             if (ob.kind === "lead" && dist < 0.4) {
-                setPencilScale((s) => Math.min(1, parseFloat((s + 0.1).toFixed(2))));
+                setPencilScale((s) => Math.min(1, parseFloat((s + 0.25).toFixed(2))));
                 ob.z = 1000;
             }
 

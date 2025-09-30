@@ -4,6 +4,7 @@ import { Physics } from "@react-three/rapier";
 import "../../styles/games/PencilRunGame.css";
 import { Vector3 } from "three";
 import GameScene from "./SceneGame";
+import PostProcessing from "./PostProcessing";
 
 type Obstacle = {
     id: number;
@@ -68,6 +69,8 @@ export default function PencilRunGame() {
     return (
         <div className="game-container">
             <Canvas shadows className="game-canvas">
+                <PostProcessing />
+
                 <Physics>
                     <GameScene
                         running={running}
