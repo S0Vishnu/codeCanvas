@@ -10,6 +10,7 @@ import GLTFCompressor from "./pages/GltfCompressor";
 import BatchImageConverter from "./pages/ImageConverter";
 import ImageEnhancer from "./pages/ImageEnhancer";
 import ChessGame from "./games/Chess";
+import PencilRunGame from "./games/pencil-run/PencilRunGame";
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                 <Route path="/image-enhancer" element={<ImageEnhancer />} />
                 {/* games */}
                 <Route path="/chess" element={<ChessGame />} />
+                <Route path="/test" element={<PencilRunGame />} />
                 {/* projects */}
             </Routes>
         </>
