@@ -524,6 +524,7 @@
 }
 
 .btn.zip {
+    white-space: nowrap;
     position: unset;
     background: #8b5cf6;
 }
@@ -534,6 +535,7 @@
 }
 
 .btn.clear {
+    white-space: nowrap;
     position: unset;
     background: #dc2626;
 }
