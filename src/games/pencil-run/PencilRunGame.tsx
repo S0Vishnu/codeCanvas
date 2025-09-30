@@ -1,10 +1,11 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import * as THREE from "three";
 import { Physics, RigidBody } from "@react-three/rapier";
 import "../../styles/games/PencilRunGame.css";
-
-/** Pencil Run Game */
+import PaperShader from "./PaperShader";
+import Pencil from "./Pencil";
+import ChaseCube from "./ChaseCube";
+import { Vector3 } from "three";
 
 type Obstacle = {
     id: number;
@@ -31,69 +32,6 @@ function useKeyInput() {
     return keys;
 }
 
-const Pencil: React.FC<{ scale: number }> = ({ scale }) => (
-    <group position={[0, scale - 1, 0]}>
-        <mesh castShadow>
-            <cylinderGeometry args={[0.15, 0.15, scale, 12]} />
-            <meshStandardMaterial color="#f4a460" />
-        </mesh>
-        <mesh position={[0, -0.75, 0]} rotation={[Math.PI, 0, 0]}>
-            <coneGeometry args={[0.13, 0.6, 12]} />
-            <meshStandardMaterial color="#2b2b2b" />
-        </mesh>
-        <mesh position={[0, 0.75 * scale, 0]}>
-            <boxGeometry args={[0.32, 0.12, 0.32]} />
-            <meshStandardMaterial color="#f08080" />
-        </mesh>
-    </group>
-);
-
-const ChaseCube: React.FC<{ position: THREE.Vector3; t: number }> = ({ position, t }) => {
-    const bob = Math.sin(t * 2) * 0.1;
-    return (
-        <mesh position={[position.x, position.y + bob, position.z]}>
-            <boxGeometry args={[0.6, 0.6, 0.6]} />
-            <meshStandardMaterial color="#8b0000" />
-        </mesh>
-    );
-};
-
-// Paper shader with scrolling lines
-const PaperShader: React.FC<{ speed: number }> = ({ speed }) => {
-    const materialRef = useRef<THREE.ShaderMaterial>(null);
-    useFrame((_, delta) => {
-        if (materialRef.current) {
-            materialRef.current.uniforms.uTime.value -= speed * delta;
-        }
-    });
-    return (
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.51, 0]} receiveShadow>
-            <planeGeometry args={[60, 400, 1, 1]} />
-            <shaderMaterial
-                ref={materialRef}
-                uniforms={{ uTime: { value: 0 } }}
-                vertexShader={`
-                  varying vec2 vUv;
-                  void main() {
-                    vUv = uv;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-                  }
-                `}
-                fragmentShader={`
-                  uniform float uTime;
-                  varying vec2 vUv;
-                  void main() {
-                    vec3 color = vec3(0.05); // dark background
-                    float stripe = smoothstep(0.45, 0.55, fract(vUv.y * 60.0 + uTime));
-                    color = mix(color, vec3(0.2), stripe*0.4);
-                    gl_FragColor = vec4(color, 1.0);
-                  }
-                `}
-            />
-        </mesh>
-    );
-};
-
 export default function PencilRunGame() {
     const keys = useKeyInput();
 
@@ -104,8 +42,8 @@ export default function PencilRunGame() {
     const [points, setPoints] = useState(0);
     const [pencilScale, setPencilScale] = useState(1);
 
-    const playerPos = useRef(new THREE.Vector3(0, 0, 0));
-    const chaseCubePos = useRef(new THREE.Vector3(0, 0, 3));
+    const playerPos = useRef(new Vector3(0, 0, 0));
+    const chaseCubePos = useRef(new Vector3(0, 0, 3));
     const baseSpeed = useRef(6);
     const speed = useRef(baseSpeed.current);
 
@@ -141,7 +79,7 @@ export default function PencilRunGame() {
 
             const distInc = speed.current * delta;
             setDistance((d) => d + distInc);
-            setPencilScale((s) => Math.max(0.25, s - (distInc / 40) * 0.2));
+            setPencilScale((s) => Math.max(0.01, s - (distInc / 40) * 0.2));
 
             spawnTimer.current += delta;
             spawnInterval.current = Math.max(0.45, 0.9 - Math.floor(distance / 50) * 0.05);
@@ -168,10 +106,8 @@ export default function PencilRunGame() {
                 }
 
                 if (ob.kind === "lead" && dist < 0.4) {
-                    console.log("scale: ", pencilScale);
-                    const scale = parseFloat(pencilScale.toFixed(2));
-                    console.log("scale: ", scale);
-                    // setPencilScale(scale + 0.1);
+                    setPencilScale((s) => Math.min(1, parseFloat((s + 0.1).toFixed(2))));
+                    ob.z = 1000;
                 }
 
                 if (ob.kind === "obstacle" && dist < 0.4) {
@@ -189,7 +125,7 @@ export default function PencilRunGame() {
             if (left) playerPos.current.x = Math.max(-2, playerPos.current.x - moveSpeed * delta);
             if (right) playerPos.current.x = Math.min(2, playerPos.current.x + moveSpeed * delta);
 
-            if (pencilScale <= 0.27) {
+            if (pencilScale <= 0.05) {
                 setGameOver(true);
                 setRunning(false);
                 setPoints(Math.floor(distance + coins * 50));
@@ -248,9 +184,9 @@ export default function PencilRunGame() {
 
             <div className="hud">
                 <div className="hud-title">Pencil Run</div>
-                <div>Distance: {Math.floor(distance)} m</div>
-                <div>Coins: {coins}</div>
-                <div>Pencil size: {pencilScale.toFixed(2)}</div>
+                <div className="">Distance: {Math.floor(distance)} m</div>
+                <div className="">Coins: {coins}</div>
+                <div className="">Pencil size: {pencilScale.toFixed(2)}</div>
             </div>
 
             {gameOver && (
