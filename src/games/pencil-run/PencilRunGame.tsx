@@ -99,9 +99,21 @@ export default function PencilRunGame() {
 
             <div className="hud">
                 <div className="hud-title">Pencil Run</div>
-                <div className="">Distance: {Math.floor(distance)} m</div>
-                <div className="">Coins: {coins}</div>
-                <div className="">Pencil size: {pencilScale.toFixed(2)}</div>
+
+                <div className="hud-top-right">
+                    <div>
+                        Distance: <span>{Math.floor(distance)} m</span>
+                    </div>
+                    <div>
+                        Coins: <span>{coins}</span>
+                    </div>
+                </div>
+
+                <div className="hud-bottom-right">
+                    <div>
+                        Pencil size: <span>{pencilScale.toFixed(2)}</span>
+                    </div>
+                </div>
             </div>
 
             {gameOver && (

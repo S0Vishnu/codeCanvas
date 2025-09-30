@@ -4,6 +4,7 @@ import PaperShader from "./PaperShader";
 import { RigidBody } from "@react-three/rapier";
 import Pencil from "./Pencil";
 import ChaseCube from "./ChaseCube";
+import Obstacles from "./gameObjects/Obstacles";
 
 export type Obstacle = {
     id: number;
@@ -141,7 +142,7 @@ export function GameScene({
             {obstacles.current.map((ob) => (
                 <mesh key={ob.id} position={[ob.x, ob.y, ob.z]} castShadow>
                     {ob.kind === "obstacle" ? (
-                        <boxGeometry args={[0.7, 0.7, 0.7]} />
+                        <Obstacles />
                     ) : ob.kind === "lead" ? (
                         <cylinderGeometry args={[0.12, 0.12, 0.18, 8]} />
                     ) : (

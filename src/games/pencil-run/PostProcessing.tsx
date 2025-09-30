@@ -1,13 +1,8 @@
 import { Environment } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import { SRGBColorSpace, TextureLoader } from "three";
-// import {
-//     EffectComposer,
-//     Scanline,
-//     Sepia,
-//     Vignette,
-// } from "@react-three/postprocessing";
-// import { BlendFunction } from "postprocessing";
+import { BrightnessContrast, EffectComposer, HueSaturation, Vignette } from "@react-three/postprocessing";
+import { BlendFunction } from "postprocessing";
 
 import bg from "./assets/sky_27_2k.webp";
 
@@ -20,20 +15,27 @@ const PostProcessing = () => {
             {/* Background Environment */}
             <Environment map={texture} background />
 
-            {/* Postprocessing pipeline */}
-            {/* <EffectComposer>
-                <Sepia intensity={1.0} blendFunction={BlendFunction.NORMAL} />
+            <EffectComposer>
+                {/* Dark edges for depth */}
                 <Vignette
-                    offset={0.5}
-                    darkness={0.5}
+                    offset={0.3} // tighter vignette
+                    darkness={0.8} // stronger vignette
                     eskil={false}
                     blendFunction={BlendFunction.NORMAL}
                 />
-                <Scanline
-                    blendFunction={BlendFunction.OVERLAY}
-                    density={1}
+
+                {/* Punch up saturation */}
+                <HueSaturation
+                    hue={0.05} // slight warm shift
+                    saturation={0.4} // bold colors
                 />
-            </EffectComposer> */}
+
+                {/* High contrast pop */}
+                <BrightnessContrast
+                    brightness={0.05} // slight lift
+                    contrast={0.15} // strong contrast
+                />
+            </EffectComposer>
         </>
     );
 };
