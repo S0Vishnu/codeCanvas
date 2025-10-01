@@ -79,6 +79,12 @@ const Pages = () => {
             thumbnail: "/thumbnails/fall-guys.webp",
             openinNewTab: true,
         },
+        {
+            name: "Pencil Runner",
+            path: "/pencil-runner",
+            category: "Games",
+            thumbnail: "/thumbnails/no-image.webp",
+        },
         { name: "Coming Soon", path: "/", category: "Games" },
     ];
 

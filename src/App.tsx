@@ -27,7 +27,7 @@ function App() {
                 <Route path="/image-enhancer" element={<ImageEnhancer />} />
                 {/* games */}
                 <Route path="/chess" element={<ChessGame />} />
-                <Route path="/test" element={<PencilRunGame />} />
+                <Route path="/pencil-runner" element={<PencilRunGame />} />
                 {/* projects */}
             </Routes>
         </>
