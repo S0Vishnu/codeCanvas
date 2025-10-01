@@ -6,6 +6,7 @@ import Pencil from "./gameObjects/Pencil";
 import ChaseCube from "./gameObjects/ChaseCube";
 import SpawnableMesh from "./gameObjects/SpawnableMesh";
 import type { Obstacle } from "./PencilRunGame";
+import useInput from "./hooks";
 
 interface GameSceneProps {
     running: boolean;
@@ -24,7 +25,6 @@ interface GameSceneProps {
     coins: number;
     speed: React.RefObject<number>;
     baseSpeed: React.RefObject<number>;
-    keys: React.RefObject<Record<string, boolean>>;
     nextId: React.RefObject<number>;
     spawnTimer: React.RefObject<number>;
     spawnInterval: React.RefObject<number>;
@@ -49,11 +49,12 @@ export function GameScene({
     coins,
     speed,
     baseSpeed,
-    keys,
     nextId,
     spawnTimer,
     spawnInterval,
 }: GameSceneProps) {
+    const input = useInput();
+    
     const { camera } = useThree();
     camera.position.set(0, 3.2, 6);
     camera.lookAt(0, 0, 0);
@@ -117,9 +118,11 @@ export function GameScene({
 
         obstacles.current = obstacles.current.filter((ob) => ob.z < 5);
 
-        const left = keys.current["ArrowLeft"] || keys.current["KeyA"];
-        const right = keys.current["ArrowRight"] || keys.current["KeyD"];
+        const left = input.current.left;
+        const right = input.current.right;
+
         const moveSpeed = 4;
+
         if (left) playerPos.current.x = Math.max(-2, playerPos.current.x - moveSpeed * delta);
         if (right) playerPos.current.x = Math.min(2, playerPos.current.x + moveSpeed * delta);
 

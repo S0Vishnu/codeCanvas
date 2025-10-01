@@ -1,4 +1,5 @@
 import React from "react";
+import MobileControls from "./MobileControls";
 
 type UIProps = {
   distance: number;
@@ -38,6 +39,8 @@ const UI: React.FC<UIProps> = ({
           </div>
         </div>
       </div>
+
+      <MobileControls />
 
       {gameOver && (
         <div className="gameover-overlay">

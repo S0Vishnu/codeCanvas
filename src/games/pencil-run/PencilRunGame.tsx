@@ -5,7 +5,7 @@ import "../../styles/games/PencilRunGame.css";
 import { Vector3 } from "three";
 import GameScene from "./SceneGame";
 import PostProcessing from "./effects/PostProcessing";
-import UI from "./UI";
+import UI from "./ui/UI";
 
 export type Obstacle = {
     id: number;
@@ -15,24 +15,7 @@ export type Obstacle = {
     kind: "obstacle" | "lead" | "coin";
 };
 
-function useKeyInput() {
-    const keys = useRef<Record<string, boolean>>({});
-    useEffect(() => {
-        const onDown = (e: KeyboardEvent) => (keys.current[e.code] = true);
-        const onUp = (e: KeyboardEvent) => (keys.current[e.code] = false);
-        window.addEventListener("keydown", onDown);
-        window.addEventListener("keyup", onUp);
-        return () => {
-            window.removeEventListener("keydown", onDown);
-            window.removeEventListener("keyup", onUp);
-        };
-    }, []);
-    return keys;
-}
-
 export default function PencilRunGame() {
-    const keys = useKeyInput();
-
     const [running, setRunning] = useState(false);
     const [gameOver, setGameOver] = useState(false);
     const [distance, setDistance] = useState(0);
@@ -90,7 +73,6 @@ export default function PencilRunGame() {
                         coins={coins}
                         speed={speed}
                         baseSpeed={baseSpeed}
-                        keys={keys}
                         nextId={nextId}
                         spawnTimer={spawnTimer}
                         spawnInterval={spawnInterval}
