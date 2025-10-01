@@ -2,19 +2,10 @@ import { useFrame, useThree } from "@react-three/fiber";
 import type { Vector3 } from "three";
 import PaperShader from "./PaperShader";
 import { RigidBody } from "@react-three/rapier";
-import Pencil from "./Pencil";
-import ChaseCube from "./ChaseCube";
-import Obstacles from "./gameObjects/Obstacles";
-import PowerUps from "./gameObjects/PowerUps";
-import Coins from "./gameObjects/Coins";
-
-export type Obstacle = {
-    id: number;
-    x: number;
-    y: number;
-    z: number;
-    kind: "obstacle" | "lead" | "gem";
-};
+import Pencil from "./gameObjects/Pencil";
+import ChaseCube from "./gameObjects/ChaseCube";
+import SpawnableMesh from "./gameObjects/SpawnableMesh";
+import type { Obstacle } from "./PencilRunGame";
 
 interface GameSceneProps {
     running: boolean;
@@ -67,6 +58,22 @@ export function GameScene({
     camera.position.set(0, 3.2, 6);
     camera.lookAt(0, 0, 0);
 
+    function EndGame() {
+        const finalPoints = Math.floor(distance + coins * 50);
+        setPoints(finalPoints);
+
+        // get stored high score
+        const storedHighScore = Number(localStorage.getItem("highScore")) || 0;
+
+        // update if current score is higher
+        if (finalPoints > storedHighScore) {
+            localStorage.setItem("highScore", String(finalPoints));
+        }
+    
+        setGameOver(true);
+        setRunning(false);
+    }
+
     useFrame((_, delta) => {
         if (!running || gameOver) return;
 
@@ -81,7 +88,7 @@ export function GameScene({
             spawnTimer.current = 0;
             const kindRand = Math.random();
             const kind: Obstacle["kind"] =
-                kindRand < 0.65 ? "obstacle" : kindRand < 0.85 ? "lead" : "gem";
+                kindRand < 0.65 ? "obstacle" : kindRand < 0.85 ? "lead" : "coin";
             const x = randomBetween(-1.8, 1.8);
             const z = -30 - Math.random() * 20;
             obstacles.current.push({ id: nextId.current++, x, y: 0, z, kind });
@@ -93,7 +100,7 @@ export function GameScene({
             const dz = ob.z - playerPos.current.z;
             const dist = Math.sqrt(dx * dx + dz * dz);
 
-            if (ob.kind === "gem" && dist < 0.4) {
+            if (ob.kind === "coin" && dist < 0.4) {
                 setCoins((c) => c + 1);
                 ob.z = 1000;
             }
@@ -104,9 +111,7 @@ export function GameScene({
             }
 
             if (ob.kind === "obstacle" && dist < 0.4) {
-                setGameOver(true);
-                setRunning(false);
-                setPoints(Math.floor(distance + coins * 50));
+                EndGame();
             }
         });
 
@@ -119,9 +124,7 @@ export function GameScene({
         if (right) playerPos.current.x = Math.min(2, playerPos.current.x + moveSpeed * delta);
 
         if (pencilScale <= 0.05) {
-            setGameOver(true);
-            setRunning(false);
-            setPoints(Math.floor(distance + coins * 50));
+            EndGame();
         }
 
         speed.current = baseSpeed.current + Math.floor(distance / 20) * 0.25;
@@ -149,15 +152,7 @@ export function GameScene({
             </group>
 
             {obstacles.current.map((ob) => (
-                <mesh key={ob.id} position={[ob.x, ob.y, ob.z]} castShadow>
-                    {ob.kind === "obstacle" ? (
-                        <Obstacles />
-                    ) : ob.kind === "lead" ? (
-                        <PowerUps />
-                    ) : (
-                        <Coins />
-                    )}
-                </mesh>
+                <SpawnableMesh key={ob.id} ob={ob} />
             ))}
 
             <ChaseCube position={chaseCubePos.current} t={distance * 0.8} />

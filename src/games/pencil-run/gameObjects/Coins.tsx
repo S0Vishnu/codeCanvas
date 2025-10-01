@@ -12,7 +12,7 @@ const Coins: React.FC = () => {
 
   useFrame((_, delta) => {
     if (coinRef.current) {
-      coinRef.current.rotation.y += delta * 0.5; // rotate slowly around Y axis
+      coinRef.current.rotation.y += delta; // rotate slowly around Y axis
     }
   });
 

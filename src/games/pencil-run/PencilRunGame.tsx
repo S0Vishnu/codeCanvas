@@ -5,13 +5,14 @@ import "../../styles/games/PencilRunGame.css";
 import { Vector3 } from "three";
 import GameScene from "./SceneGame";
 import PostProcessing from "./effects/PostProcessing";
+import UI from "./UI";
 
-type Obstacle = {
+export type Obstacle = {
     id: number;
     x: number;
     y: number;
     z: number;
-    kind: "obstacle" | "lead" | "gem";
+    kind: "obstacle" | "lead" | "coin";
 };
 
 function useKeyInput() {
@@ -97,38 +98,14 @@ export default function PencilRunGame() {
                 </Physics>
             </Canvas>
 
-            <div className="hud">
-                <div className="hud-title">Pencil Run</div>
-
-                <div className="hud-top-right">
-                    <div>
-                        Distance: <span>{Math.floor(distance)} m</span>
-                    </div>
-                    <div>
-                        Coins: <span>{coins}</span>
-                    </div>
-                </div>
-
-                <div className="hud-bottom-right">
-                    <div>
-                        Pencil size: <span>{pencilScale.toFixed(2)}</span>
-                    </div>
-                </div>
-            </div>
-
-            {gameOver && (
-                <div className="gameover-overlay">
-                    <div className="gameover-box">
-                        <h2>Game Over</h2>
-                        <p>Distance: {Math.floor(distance)} m</p>
-                        <p>Coins: {coins}</p>
-                        <p>Points: {points || Math.floor(distance + coins * 50)}</p>
-                        <button className="play-again-btn" onClick={resetGame}>
-                            Play Again
-                        </button>
-                    </div>
-                </div>
-            )}
+            <UI
+                distance={distance}
+                coins={coins}
+                pencilScale={pencilScale}
+                gameOver={gameOver}
+                points={points}
+                resetGame={resetGame}
+            />
         </div>
     );
 }

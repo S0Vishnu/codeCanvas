@@ -1,4 +1,4 @@
-import { Environment } from "@react-three/drei";
+import { CameraShake, Environment, Stars } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import { SRGBColorSpace, TextureLoader } from "three";
 import { Bloom, BrightnessContrast, EffectComposer, HueSaturation, Vignette } from "@react-three/postprocessing";
@@ -9,11 +9,27 @@ import bg from "../assets/sky_27_2k.webp";
 const PostProcessing = () => {
     const texture = useLoader(TextureLoader, bg);
     texture.colorSpace = SRGBColorSpace;
+    const config = {
+        maxYaw: 0.1,
+        maxPitch: 0.1,
+        maxRoll: 0.1,
+        yawFrequency: 0.1,
+        pitchFrequency: 0.1,
+        rollFrequency: 0.1,
+        intensity: 1,
+        decay: false,
+        decayRate: 0.65,
+        controls: undefined,
+    }
 
     return (
         <>
             {/* Background Environment */}
-            <Environment map={texture} background />
+            <Environment preset="night" />
+
+            <CameraShake {...config} />
+
+            <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 
             <EffectComposer>
                 {/* Dark edges for depth */}
