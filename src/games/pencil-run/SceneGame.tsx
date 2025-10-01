@@ -5,6 +5,8 @@ import { RigidBody } from "@react-three/rapier";
 import Pencil from "./Pencil";
 import ChaseCube from "./ChaseCube";
 import Obstacles from "./gameObjects/Obstacles";
+import PowerUps from "./gameObjects/PowerUps";
+import Coins from "./gameObjects/Coins";
 
 export type Obstacle = {
     id: number;
@@ -129,8 +131,15 @@ export function GameScene({
 
     return (
         <>
-            <ambientLight intensity={0.6} />
-            <directionalLight position={[5, 10, 5]} castShadow intensity={0.8} />
+            <ambientLight intensity={0.3} />
+            <directionalLight
+              castShadow
+              position={[5, 10, 5]}
+              intensity={1}
+              shadow-mapSize-width={2048}
+              shadow-mapSize-height={2048}
+            />
+          
             <PaperShader speed={speed.current} />
 
             <group position={[playerPos.current.x, playerPos.current.y + 0.3, 0]}>
@@ -144,19 +153,10 @@ export function GameScene({
                     {ob.kind === "obstacle" ? (
                         <Obstacles />
                     ) : ob.kind === "lead" ? (
-                        <cylinderGeometry args={[0.12, 0.12, 0.18, 8]} />
+                        <PowerUps />
                     ) : (
-                        <octahedronGeometry args={[0.25, 0]} />
+                        <Coins />
                     )}
-                    <meshStandardMaterial
-                        color={
-                            ob.kind === "obstacle"
-                                ? "#555"
-                                : ob.kind === "lead"
-                                ? "#8b4513"
-                                : "#4dd0e1"
-                        }
-                    />
                 </mesh>
             ))}
 

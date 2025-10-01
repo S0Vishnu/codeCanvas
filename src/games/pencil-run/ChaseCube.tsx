@@ -10,8 +10,7 @@ interface ChaseEraserProps {
 const ChaseEraser: React.FC<ChaseEraserProps> = ({ position, t }) => {
     const bob = Math.sin(t * 2) * 0.1;
 
-    // Load GLTF eraser model (replace path with your model file)
-    const { scene } = useGLTF("/assets/gltf/eraser.glb", true);
+    const { scene } = useGLTF("/assets/pencil-run-gltf/eraser.glb", true);
 
     return (
         <Suspense fallback={null}>

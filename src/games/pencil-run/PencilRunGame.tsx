@@ -4,7 +4,7 @@ import { Physics } from "@react-three/rapier";
 import "../../styles/games/PencilRunGame.css";
 import { Vector3 } from "three";
 import GameScene from "./SceneGame";
-import PostProcessing from "./PostProcessing";
+import PostProcessing from "./effects/PostProcessing";
 
 type Obstacle = {
     id: number;
