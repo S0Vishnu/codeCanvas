@@ -77,6 +77,8 @@ export function GameScene({
 
     useFrame((_, delta) => {
         if (!running || gameOver) return;
+        
+        if (!playerPos.current || !chaseCubePos.current) return;
 
         const distInc = speed.current * delta;
         setDistance((d) => d + distInc);

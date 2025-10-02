@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
 import "../../styles/games/PencilRunGame.css";
-import { Vector3 } from "three";
+import { NoToneMapping, SRGBColorSpace, Vector3 } from "three";
 import GameScene from "./SceneGame";
 import PostProcessing from "./effects/PostProcessing";
 import UI from "./ui/UI";
@@ -54,7 +54,17 @@ export default function PencilRunGame() {
     return (
         <InputProvider>
             <div className="game-container">
-                <Canvas shadows className="game-canvas">
+                <Canvas 
+                    shadows 
+                    className="game-canvas" 
+                    camera={{ fov: 55, near: 0.1, far: 1000 }}
+                    onCreated={({ gl }) => {
+                      gl.outputColorSpace = SRGBColorSpace;
+                      gl.toneMapping = NoToneMapping;
+                    }}
+                    frameloop="demand"
+                    gl={{ antialias: true, preserveDrawingBuffer: true }}
+                >
                     <PostProcessing />
         
                     <Physics>

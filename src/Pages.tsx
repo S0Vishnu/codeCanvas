@@ -83,7 +83,7 @@ const Pages = () => {
             name: "Pencil Runner",
             path: "/pencil-runner",
             category: "Games",
-            thumbnail: "/thumbnails/no-image.webp",
+            thumbnail: "/thumbnails/pencilRun.webp",
         },
         { name: "Coming Soon", path: "/", category: "Games" },
     ];
@@ -136,8 +136,10 @@ const Pages = () => {
                         }}
                     >
                         {link.beta && <span className="beta-tag">Beta</span>}
-                        {link.thumbnail && (
+                        {link.thumbnail ? (
                             <img src={link.thumbnail} alt={link.name} className="card-thumbnail" />
+                        ):(
+                            <img src={'/thumbnails/no-image.webp'} alt={link.name} className="card-thumbnail" />
                         )}
                         <p className="card-title">{link.name}</p>
                         {link.path === "/coming-soon" && (
