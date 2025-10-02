@@ -1,30 +1,20 @@
-import useInput from "../hooks";
+import { useInput } from "../hooks/inputContext";
 
 export default function MobileControls() {
-  const input = useInput();
+  const [_, setInput] = useInput();
 
   return (
     <div className="mobile-controls">
       <button
-        onTouchStart={() => {
-          input.current.left = true;
-          input.current.right = false;
-        }}
-        onTouchEnd={() => {
-          input.current.left = false;
-        }}
+        onTouchStart={() => setInput(s => ({ ...s, left: true, right: false }))}
+        onTouchEnd={() => setInput(s => ({ ...s, left: false }))}
       >
         ◀
       </button>
 
       <button
-        onTouchStart={() => {
-          input.current.right = true;
-          input.current.left = false;
-        }}
-        onTouchEnd={() => {
-          input.current.right = false;
-        }}
+        onTouchStart={() => setInput(s => ({ ...s, right: true, left: false }))}
+        onTouchEnd={() => setInput(s => ({ ...s, right: false }))}
       >
         ▶
       </button>

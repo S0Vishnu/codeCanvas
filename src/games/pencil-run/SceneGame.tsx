@@ -6,7 +6,7 @@ import Pencil from "./gameObjects/Pencil";
 import ChaseCube from "./gameObjects/ChaseCube";
 import SpawnableMesh from "./gameObjects/SpawnableMesh";
 import type { Obstacle } from "./PencilRunGame";
-import useInput from "./hooks";
+import { useInput } from "./hooks/inputContext";
 
 interface GameSceneProps {
     running: boolean;
@@ -53,7 +53,7 @@ export function GameScene({
     spawnTimer,
     spawnInterval,
 }: GameSceneProps) {
-    const input = useInput();
+    const [input] = useInput();
     
     const { camera } = useThree();
     camera.position.set(0, 3.2, 6);
@@ -118,8 +118,8 @@ export function GameScene({
 
         obstacles.current = obstacles.current.filter((ob) => ob.z < 5);
 
-        const left = input.current.left;
-        const right = input.current.right;
+        const left = input.left;
+        const right = input.right;
 
         const moveSpeed = 4;
 
