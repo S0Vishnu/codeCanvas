@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 export type InputState = {
   left: boolean;
   right: boolean;
+  paused: boolean;
 };
 
 type InputContextType = [
@@ -13,7 +14,11 @@ type InputContextType = [
 const InputContext = createContext<InputContextType | undefined>(undefined);
 
 export function InputProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<InputState>({ left: false, right: false });
+  const [state, setState] = useState<InputState>({
+    left: false,
+    right: false,
+    paused: false,
+  });
 
   useEffect(() => {
     const onDown = (e: KeyboardEvent) => {
@@ -22,6 +27,10 @@ export function InputProvider({ children }: { children: React.ReactNode }) {
       }
       if (e.code === "ArrowRight" || e.code === "KeyD") {
         setState(s => ({ ...s, right: true }));
+      }
+      if (e.code === "Escape" || e.code === "KeyP") {
+        // toggle pause
+        setState(s => ({ ...s, paused: !s.paused }));
       }
     };
 
@@ -32,6 +41,7 @@ export function InputProvider({ children }: { children: React.ReactNode }) {
       if (e.code === "ArrowRight" || e.code === "KeyD") {
         setState(s => ({ ...s, right: false }));
       }
+      // no need to handle pause on keyup, it's toggled on keydown
     };
 
     window.addEventListener("keydown", onDown);

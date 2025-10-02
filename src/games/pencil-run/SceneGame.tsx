@@ -83,6 +83,8 @@ export function GameScene({
         
         if (!playerPos.current || !chaseCubePos.current) return;
 
+        if (input.paused) return;
+
         const distInc = speed.current * delta;
         setDistance((d) => d + distInc);
         setPencilScale((s) => Math.max(0.01, s - (distInc / 40) * 0.2));

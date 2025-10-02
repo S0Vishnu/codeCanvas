@@ -1,5 +1,6 @@
 import React from "react";
 import MobileControls from "./MobileControls";
+import { useInput } from "../hooks/inputContext";
 
 type UIProps = {
   distance: number;
@@ -19,8 +20,11 @@ const UI: React.FC<UIProps> = ({
   resetGame,
 }) => {
   const highScore = Number(localStorage.getItem("highScore")) || 0;
+  const [input, setInput] = useInput(); // access paused state
+
   return (
     <>
+      {/* HUD */}
       <div className="hud">
         <div className="hud-title">Pencil Run</div>
 
@@ -42,6 +46,22 @@ const UI: React.FC<UIProps> = ({
 
       <MobileControls />
 
+      {/* Paused Overlay */}
+      {input.paused && !gameOver && (
+        <div className="paused-overlay">
+          <div className="paused-box">
+            <h2>Paused</h2>
+            <button
+              className="resume-btn"
+              onClick={() => setInput((s) => ({ ...s, paused: false }))}
+            >
+              Resume
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Game Over Overlay */}
       {gameOver && (
         <div className="gameover-overlay">
           <div className="gameover-box">
