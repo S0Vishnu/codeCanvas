@@ -54,6 +54,13 @@ export function GameScene({
     spawnInterval,
 }: GameSceneProps) {
     const [input] = useInput();
+
+    // Spawn config
+    const spawnConfig = {
+      obstacle: { weight: 0.65, minDistance: 1 }, // 65% chance, min spacing 5 units
+      lead: { weight: 0.2, minDistance: 8 },      // 20% chance
+      coin: { weight: 0.15, minDistance: 3 },     // 15% chance
+    };
     
     const { camera } = useThree();
     camera.position.set(0, 3.2, 6);
@@ -88,13 +95,38 @@ export function GameScene({
         spawnInterval.current = Math.max(0.45, 0.9 - Math.floor(distance / 50) * 0.05);
 
         if (spawnTimer.current > spawnInterval.current) {
-            spawnTimer.current = 0;
-            const kindRand = Math.random();
-            const kind: Obstacle["kind"] =
-                kindRand < 0.65 ? "obstacle" : kindRand < 0.85 ? "lead" : "coin";
-            const x = randomBetween(-1.8, 1.8);
-            const z = -30 - Math.random() * 20;
-            obstacles.current.push({ id: nextId.current++, x, y: 0, z, kind });
+          spawnTimer.current = 0;
+
+          // Weighted random selection
+          const rand = Math.random();
+          let cumulative = 0;
+          let kind: Obstacle["kind"] = "obstacle";
+
+          for (const k of Object.keys(spawnConfig) as (keyof typeof spawnConfig)[]) {
+            cumulative += spawnConfig[k].weight;
+            if (rand < cumulative) {
+              kind = k;
+              break;
+            }
+          }
+      
+          // Ensure spacing
+          const minDist = spawnConfig[kind].minDistance;
+          const lastSpawn = obstacles.current[obstacles.current.length - 1];
+          const safeZ =
+            lastSpawn?.z != null ? Math.min(lastSpawn.z - minDist, -10) : -10;
+      
+          // Spawn position
+          const x = randomBetween(-1.8, 1.8);
+          const z = safeZ - Math.random() * 20;
+      
+          obstacles.current.push({
+            id: nextId.current++,
+            x,
+            y: 0,
+            z,
+            kind,
+          });
         }
 
         obstacles.current.forEach((ob) => {
