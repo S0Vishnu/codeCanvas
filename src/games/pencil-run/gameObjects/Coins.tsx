@@ -6,18 +6,19 @@ import { Group } from "three";
 const Coins: React.FC = () => {
   const { scene } = useGLTF("/assets/pencil-run-gltf/coin.glb") as any;
   const coinRef = useRef<Group>(null);
+  const ROTATION_SPEED = 2;
 
   // Clone the scene to avoid shared reference
   const coin = scene.clone();
 
   useFrame((_, delta) => {
     if (coinRef.current) {
-      coinRef.current.rotation.y += delta; // rotate slowly around Y axis
+      coinRef.current.rotation.y += delta * ROTATION_SPEED; // rotate slowly around Y axis
     }
   });
 
   return (
-    <group ref={coinRef} scale={2}>
+    <group ref={coinRef} scale={2.5}>
       <primitive object={coin} />
     </group>
   );

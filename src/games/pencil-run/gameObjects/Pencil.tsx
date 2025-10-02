@@ -9,7 +9,7 @@ import React, { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 
 // Import particles component
-import ChipParticles from '../effects/ChipParticles';
+import SimpleChipParticles, { type SimpleChipParticlesHandle } from '../effects/ChipParticles';
 import { coneTrailFragment, coneTrailVertex } from "../effects/shaders/speedLineShader";
 
 const Pencil: React.FC<{ scale: number }> = ({ scale }) => {
@@ -28,6 +28,8 @@ const Pencil: React.FC<{ scale: number }> = ({ scale }) => {
 
   // Refs
   const coneTrailRef = useRef<ShaderMaterial>(null!);
+  const particlesRef = useRef<SimpleChipParticlesHandle>(null);
+
 
   // Cone trail shader uniforms
   const coneTrailUniforms = useMemo(() => ({
@@ -52,6 +54,9 @@ const Pencil: React.FC<{ scale: number }> = ({ scale }) => {
     if (coneTrailRef.current) {
       coneTrailRef.current.uniforms.time.value += delta;
     }
+    if (particlesRef.current) {
+      particlesRef.current.updateParticles(delta);
+    }
   });
 
   return (
@@ -72,10 +77,11 @@ const Pencil: React.FC<{ scale: number }> = ({ scale }) => {
       </mesh>
 
       {/* Chip Particles */}
-      <ChipParticles 
-        bodyHeight={bodyHeight}
-        tipHeight={tipHeight}
-        tipRadius={tipRadius}
+      <SimpleChipParticles 
+        ref={particlesRef}
+        bodyHeight={1}
+        tipHeight={0.2}
+        tipRadius={0.1}
       />
 
       {/* Pencil body */}

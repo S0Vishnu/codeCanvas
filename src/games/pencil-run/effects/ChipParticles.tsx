@@ -1,127 +1,91 @@
-import { BufferAttribute, Points, BufferGeometry } from "three";
-import React, { useRef, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
+import { BufferGeometry, BufferAttribute, Points } from "three";
+import { useRef, useMemo, forwardRef, useImperativeHandle } from "react";
 
-interface ChipParticlesProps {
+export interface SimpleChipParticlesProps {
   bodyHeight: number;
   tipHeight: number;
   tipRadius: number;
 }
 
-const ChipParticles: React.FC<ChipParticlesProps> = ({
-  bodyHeight,
-  tipHeight,
-  tipRadius,
-}) => {
-  const particlesRef = useRef<Points>(null!);
+export interface SimpleChipParticlesHandle {
+  updateParticles: (delta: number) => void;
+}
 
-  // Particles data (wood/graphite chunks from pencil tip)
-  const particlesGeometry = useMemo(() => {
+const SimpleChipParticles = forwardRef<
+  SimpleChipParticlesHandle,
+  SimpleChipParticlesProps
+>(({ bodyHeight, tipHeight, tipRadius }, ref) => {
+  const pointsRef = useRef<Points>(null!);
+  const positionsRef = useRef<Float32Array>(null!);
+  const timeRef = useRef(0);
+
+  const geometry = useMemo(() => {
     const count = 40;
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
-    const sizes = new Float32Array(count);
-    const velocities = new Float32Array(count * 3);
-    const lifetimes = new Float32Array(count);
 
     for (let i = 0; i < count; i++) {
-      // Start at pencil tip position
-      positions[i * 3] = (Math.random() - 0.5) * tipRadius * 0.3;
-      positions[i * 3 + 1] = -bodyHeight / 2 - tipHeight;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * tipRadius * 0.3;
+      const idx = i * 3;
+      positions[idx] = (Math.random() - 0.5) * tipRadius * 0.2;
+      positions[idx + 1] = -bodyHeight / 2 - tipHeight;
+      positions[idx + 2] = (Math.random() - 0.5) * tipRadius * 0.2;
 
-      // Wood (brown) and graphite (dark gray) colors
       if (Math.random() > 0.4) {
-        // Graphite chips
-        colors[i * 3] = 0.15;
-        colors[i * 3 + 1] = 0.15;
-        colors[i * 3 + 2] = 0.15;
+        colors[idx] = 0.15;
+        colors[idx + 1] = 0.15;
+        colors[idx + 2] = 0.15;
       } else {
-        // Wood chips
-        colors[i * 3] = 0.7 + Math.random() * 0.2;
-        colors[i * 3 + 1] = 0.5 + Math.random() * 0.2;
-        colors[i * 3 + 2] = 0.3 + Math.random() * 0.1;
+        colors[idx] = 0.7 + Math.random() * 0.2;
+        colors[idx + 1] = 0.5 + Math.random() * 0.2;
+        colors[idx + 2] = 0.3 + Math.random() * 0.1;
       }
-
-      // Random initial velocities (backward and slightly random)
-      velocities[i * 3] = -1.5 - Math.random() * 2.0;
-      velocities[i * 3 + 1] = (Math.random() - 0.3) * 0.8;
-      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.4;
-
-      sizes[i] = 0.015 + Math.random() * 0.02;
-      lifetimes[i] = Math.random() * 2.0; // Stagger initial lifetimes
     }
+
+    positionsRef.current = positions;
 
     const geometry = new BufferGeometry();
     geometry.setAttribute("position", new BufferAttribute(positions, 3));
     geometry.setAttribute("color", new BufferAttribute(colors, 3));
-    geometry.setAttribute("size", new BufferAttribute(sizes, 1));
-    geometry.setAttribute("velocity", new BufferAttribute(velocities, 3));
-    geometry.setAttribute("lifetime", new BufferAttribute(lifetimes, 1));
 
     return geometry;
   }, [bodyHeight, tipHeight, tipRadius]);
 
-  // Animation loop
-  useFrame((_, delta) => {
-    if (!particlesRef.current) return;
+  const updateParticles = (delta: number) => {
+    if (!pointsRef.current) return;
 
-    const geometry = particlesRef.current.geometry as BufferGeometry;
-    const positions = geometry.attributes.position as BufferAttribute;
-    const velocities = geometry.attributes.velocity as BufferAttribute;
-    const lifetimes = geometry.attributes.lifetime as BufferAttribute;
+    timeRef.current += delta;
+    const positionAttribute = geometry.getAttribute(
+      "position"
+    ) as BufferAttribute;
+    const positions = positionAttribute.array as Float32Array;
 
-    if (!positions || !velocities || !lifetimes) return;
-
-    const posArray = positions.array as Float32Array;
-    const velArray = velocities.array as Float32Array;
-    const lifeArray = lifetimes.array as Float32Array;
-
-    for (let i = 0; i < posArray.length / 3; i++) {
+    // Simple sine wave motion for testing
+    for (let i = 0; i < positions.length / 3; i++) {
       const idx = i * 3;
-      lifeArray[i] += delta;
-
-      if (lifeArray[i] > 3.0 || posArray[idx] < -4.0) {
-        posArray[idx] = (Math.random() - 0.5) * tipRadius * 0.3;
-        posArray[idx + 1] = -bodyHeight / 2 - tipHeight;
-        posArray[idx + 2] = (Math.random() - 0.5) * tipRadius * 0.3;
-
-        velArray[idx] = -1.5 - Math.random() * 2.0;
-        velArray[idx + 1] = (Math.random() - 0.3) * 0.8;
-        velArray[idx + 2] = (Math.random() - 0.5) * 0.4;
-
-        lifeArray[i] = 0;
-      } else {
-        posArray[idx] += velArray[idx] * delta;
-        posArray[idx + 1] += velArray[idx + 1] * delta;
-        posArray[idx + 2] += velArray[idx + 2] * delta;
-
-        velArray[idx + 1] -= 1.5 * delta; // gravity
-        velArray[idx] *= 1.0 - delta * 0.5;
-        velArray[idx + 1] *= 1.0 - delta * 0.5;
-        velArray[idx + 2] *= 1.0 - delta * 0.5;
-      }
+      positions[idx + 1] =
+        positionsRef.current[idx + 1] + Math.sin(timeRef.current + i) * 0.5;
     }
 
-    positions.needsUpdate = true;
-    velocities.needsUpdate = true;
-    lifetimes.needsUpdate = true;
-  });
+    positionAttribute.needsUpdate = true;
+    console.log("Updating particles", timeRef.current); // Debug log
+  };
+
+  useImperativeHandle(ref, () => ({
+    updateParticles,
+  }));
 
   return (
-    <points ref={particlesRef} position={[0, 0.05, 0]} rotation={[0, 1, 0]}>
-      <primitive object={particlesGeometry} />
+    <points ref={pointsRef} geometry={geometry} position={[0, 0.05, 0]}>
       <pointsMaterial
-        size={0.06}
+        size={0.04}
         vertexColors
-        color={"black"}
         transparent
-        opacity={0.8}
+        opacity={0.9}
         depthWrite={false}
         sizeAttenuation={true}
       />
     </points>
   );
-};
+});
 
-export default ChipParticles;
+export default SimpleChipParticles;

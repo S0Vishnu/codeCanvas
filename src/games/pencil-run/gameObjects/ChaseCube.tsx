@@ -24,4 +24,7 @@ const ChaseEraser: React.FC<ChaseEraserProps> = ({ position, t }) => {
     );
 };
 
+// Preload for performance
+useGLTF.preload("/assets/pencil-run-gltf/eraser.glb");
+
 export default ChaseEraser;

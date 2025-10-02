@@ -57,7 +57,7 @@ export default function PencilRunGame() {
                 <Canvas 
                     shadows 
                     className="game-canvas" 
-                    camera={{ fov: 55, near: 0.1, far: 1000 }}
+                    camera={{ fov: 60, near: 0.1, far: 1000, position: [0, 3.2, 6] }}
                     onCreated={({ gl }) => {
                       gl.outputColorSpace = SRGBColorSpace;
                       gl.toneMapping = NoToneMapping;

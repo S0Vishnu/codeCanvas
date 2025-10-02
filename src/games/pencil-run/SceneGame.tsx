@@ -1,4 +1,4 @@
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import type { Vector3 } from "three";
 import PaperShader from "./PaperShader";
 import { RigidBody } from "@react-three/rapier";
@@ -61,10 +61,6 @@ export function GameScene({
       lead: { weight: 0.2, minDistance: 8 },      // 20% chance
       coin: { weight: 0.15, minDistance: 3 },     // 15% chance
     };
-    
-    const { camera } = useThree();
-    camera.position.set(0, 3.2, 6);
-    camera.lookAt(0, 0, 0);
 
     function EndGame() {
         const finalPoints = Math.floor(distance + coins * 50);
