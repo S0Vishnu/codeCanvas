@@ -1,90 +1,131 @@
-import { BufferGeometry, BufferAttribute, Points } from "three";
+import { BufferGeometry, BufferAttribute, Points, Vector3 } from "three";
 import { useRef, useMemo, forwardRef, useImperativeHandle } from "react";
 
 export interface SimpleChipParticlesProps {
-  bodyHeight: number;
-  tipHeight: number;
-  tipRadius: number;
+    bodyHeight: number;
+    tipHeight: number;
+    tipRadius: number;
 }
 
 export interface SimpleChipParticlesHandle {
-  updateParticles: (delta: number) => void;
+    updateParticles: (delta: number) => void;
 }
 
 const SimpleChipParticles = forwardRef<
-  SimpleChipParticlesHandle,
-  SimpleChipParticlesProps
+    SimpleChipParticlesHandle,
+    SimpleChipParticlesProps
 >(({ bodyHeight, tipHeight, tipRadius }, ref) => {
-  const pointsRef = useRef<Points>(null!);
-  const positionsRef = useRef<Float32Array>(null!);
-  const timeRef = useRef(0);
+    const pointsRef = useRef<Points>(null!);
+    const positionsRef = useRef<Float32Array>(null!);
+    const velocitiesRef = useRef<Vector3[]>([]);
+    const lifeRef = useRef<Float32Array>(null!);
+    const gravity = -3; // downward acceleration
 
-  const geometry = useMemo(() => {
-    const count = 40;
-    const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
+    const geometry = useMemo(() => {
+        const count = 60;
+        const positions = new Float32Array(count * 3);
+        const colors = new Float32Array(count * 3);
+        const lifetimes = new Float32Array(count);
+        const velocities: Vector3[] = [];
 
-    for (let i = 0; i < count; i++) {
-      const idx = i * 3;
-      positions[idx] = (Math.random() - 0.5) * tipRadius * 0.2;
-      positions[idx + 1] = -bodyHeight / 2 - tipHeight;
-      positions[idx + 2] = (Math.random() - 0.5) * tipRadius * 0.2;
+        for (let i = 0; i < count; i++) {
+            const idx = i * 3;
+            positions[idx] = (Math.random() - 0.5) * tipRadius * 0.2;
+            positions[idx + 1] = -bodyHeight / 2 - tipHeight;
+            positions[idx + 2] = (Math.random() - 0.5) * tipRadius * 0.2;
 
-      if (Math.random() > 0.4) {
-        colors[idx] = 0.15;
-        colors[idx + 1] = 0.15;
-        colors[idx + 2] = 0.15;
-      } else {
-        colors[idx] = 0.7 + Math.random() * 0.2;
-        colors[idx + 1] = 0.5 + Math.random() * 0.2;
-        colors[idx + 2] = 0.3 + Math.random() * 0.1;
-      }
-    }
+            // Random direction spread
+            const dir = new Vector3(
+                (Math.random() - 0.5) * 2,
+                Math.random() * 2,
+                (Math.random() - 0.5) * 2
+            ).normalize();
+            const speed = 1.5 + Math.random() * 2;
+            velocities.push(dir.multiplyScalar(speed));
 
-    positionsRef.current = positions;
+            lifetimes[i] = Math.random() * 2 + 1; // seconds
 
-    const geometry = new BufferGeometry();
-    geometry.setAttribute("position", new BufferAttribute(positions, 3));
-    geometry.setAttribute("color", new BufferAttribute(colors, 3));
+            if (Math.random() > 0.4) {
+                colors[idx] = 0.15;
+                colors[idx + 1] = 0.15;
+                colors[idx + 2] = 0.15;
+            } else {
+                colors[idx] = 0.7 + Math.random() * 0.2;
+                colors[idx + 1] = 0.5 + Math.random() * 0.2;
+                colors[idx + 2] = 0.3 + Math.random() * 0.1;
+            }
+        }
 
-    return geometry;
-  }, [bodyHeight, tipHeight, tipRadius]);
+        positionsRef.current = positions;
+        velocitiesRef.current = velocities;
+        lifeRef.current = lifetimes;
 
-  const updateParticles = (delta: number) => {
-    if (!pointsRef.current) return;
+        const geometry = new BufferGeometry();
+        geometry.setAttribute("position", new BufferAttribute(positions, 3));
+        geometry.setAttribute("color", new BufferAttribute(colors, 3));
 
-    timeRef.current += delta;
-    const positionAttribute = geometry.getAttribute(
-      "position"
-    ) as BufferAttribute;
-    const positions = positionAttribute.array as Float32Array;
+        return geometry;
+    }, [bodyHeight, tipHeight, tipRadius]);
 
-    // Simple sine wave motion for testing
-    for (let i = 0; i < positions.length / 3; i++) {
-      const idx = i * 3;
-      positions[idx + 1] =
-        positionsRef.current[idx + 1] + Math.sin(timeRef.current + i) * 0.5;
-    }
+    const updateParticles = (delta: number) => {
+        const positionAttr = geometry.getAttribute(
+            "position"
+        ) as BufferAttribute;
+        const positions = positionAttr.array as Float32Array;
 
-    positionAttribute.needsUpdate = true;
-  };
+        for (let i = 0; i < velocitiesRef.current.length; i++) {
+            const idx = i * 3;
+            const vel = velocitiesRef.current[i];
 
-  useImperativeHandle(ref, () => ({
-    updateParticles,
-  }));
+            // Apply gravity + velocity
+            vel.y -= gravity * delta;
+            positions[idx] += vel.x * delta;
+            positions[idx + 1] += vel.y * delta;
+            positions[idx + 2] += vel.z * delta;
 
-  return (
-    <points ref={pointsRef} geometry={geometry} position={[0, 0.05, 0]}>
-      <pointsMaterial
-        size={0.04}
-        vertexColors
-        transparent
-        opacity={0.9}
-        depthWrite={false}
-        sizeAttenuation={true}
-      />
-    </points>
-  );
+            // Damping (slow down over time)
+            vel.multiplyScalar(0.98);
+
+            // Respawn if lifetime expired or below ground
+            lifeRef.current[i] -= delta;
+            if (lifeRef.current[i] <= 0 || positions[idx + 1] < -3) {
+                positions[idx] = (Math.random() - 0.5) * tipRadius * 0.2;
+                positions[idx + 1] = -bodyHeight / 2 - tipHeight;
+                positions[idx + 2] = (Math.random() - 0.5) * tipRadius * 0.2;
+                vel.set(
+                    (Math.random() - 0.5) * 3,
+                    Math.random() * 2.5,
+                    (Math.random() - 0.5) * 3
+                );
+                lifeRef.current[i] = Math.random() * 2 + 1;
+            }
+        }
+
+        positionAttr.needsUpdate = true;
+    };
+
+    useImperativeHandle(ref, () => ({
+        updateParticles,
+    }));
+
+    return (
+        <points
+            ref={pointsRef}
+            geometry={geometry}
+            position={[0, -1, 0.8]}
+            rotation={[-Math.PI / 2, 0, Math.PI]}
+        >
+            <pointsMaterial
+                size={0.04}
+                vertexColors
+                color={0x000000}
+                transparent
+                opacity={0.9}
+                depthWrite={false}
+                sizeAttenuation={true}
+            />
+        </points>
+    );
 });
 
 export default SimpleChipParticles;
