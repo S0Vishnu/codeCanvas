@@ -73,7 +73,7 @@ export function GameScene({
 
     function EndGame() {
         playTrack("gameOver", false);
-        const finalPoints = Math.floor(distance + coins * 50);
+        const finalPoints = Math.floor(distance + coins * 50 * speed.current);
         setPoints(finalPoints);
 
         // get stored high score
@@ -105,7 +105,11 @@ export function GameScene({
             0.9 - Math.floor(distance / 50) * 0.05
         );
 
-        if (spawnTimer.current > spawnInterval.current) {
+        // Only spawn new obstacles if we have less than 20
+        if (
+            spawnTimer.current > spawnInterval.current &&
+            obstacles.current.length < 20
+        ) {
             spawnTimer.current = 0;
 
             // Weighted random selection
@@ -156,6 +160,7 @@ export function GameScene({
             }
         });
 
+        // Filter out obstacles that are behind the player or deactivated
         obstacles.current = obstacles.current.filter((ob) => ob.z < 5);
 
         const left = input.left;
@@ -182,6 +187,11 @@ export function GameScene({
 
         chaseCubePos.current.x +=
             (playerPos.current.x - chaseCubePos.current.x) * 0.05;
+
+        obstacles.current = obstacles.current.filter((ob) => {
+            const isAbovePlayer = ob.y < playerPos.current!.y + 0.1;
+            return isAbovePlayer;
+        });
     });
 
     return (

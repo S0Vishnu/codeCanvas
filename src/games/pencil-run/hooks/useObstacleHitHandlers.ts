@@ -17,7 +17,7 @@ export function useObstacleHitHandlers(
             case "lead":
                 playSfx("powerup");
                 setPencilScale((s) =>
-                    Math.min(1, parseFloat((s + 0.25).toFixed(2)))
+                    Math.min(1.5, parseFloat((s + 0.25).toFixed(2)))
                 );
                 break;
 

@@ -31,6 +31,7 @@ export function SettingsUI() {
                 className="settings-toggle-btn"
                 onClick={() => {
                     setOpen(true);
+                    playSfx("click");
                     setInput((s) => ({ ...s, paused: true }));
                 }}
             >
@@ -64,8 +65,9 @@ export function SettingsUI() {
                                 type="range"
                                 min={0}
                                 max={1}
-                                step={0.01}
+                                step={0.1}
                                 value={volume}
+                                disabled={musicEnabled ? false : true}
                                 onChange={(e) =>
                                     setVolume(parseFloat(e.target.value))
                                 }
@@ -97,6 +99,7 @@ export function SettingsUI() {
                                 min={0}
                                 max={1}
                                 step={0.01}
+                                disabled={sfxEnabled ? false : true}
                                 value={sfxVolume}
                                 onChange={(e) =>
                                     setSfxVolume(parseFloat(e.target.value))
@@ -114,6 +117,7 @@ export function SettingsUI() {
                             className="settings-close-btn"
                             onClick={() => {
                                 setOpen(false);
+                                playSfx("click");
                                 setInput((s) => ({ ...s, paused: false }));
                             }}
                         >

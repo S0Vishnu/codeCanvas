@@ -17,7 +17,7 @@ export default function MobileControls() {
       <button
         onTouchStart={() => setInput(s => ({ ...s, paused: !s.paused }))}
       >
-        {input.paused ? "▶" : "⏸"}
+        {input.paused ? "" : "⏸"}
       </button>
 
       {/* Right button */}
