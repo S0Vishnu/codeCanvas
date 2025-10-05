@@ -67,7 +67,6 @@ const SimpleChipParticles = forwardRef<
     }
 
     positionAttribute.needsUpdate = true;
-    console.log("Updating particles", timeRef.current); // Debug log
   };
 
   useImperativeHandle(ref, () => ({

@@ -209,3 +209,246 @@
   background: transparent;
   box-shadow: none;
 }
+
+/* ----------------- Fullscreen Overlay ----------------- */
+.settings-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #080808a8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(6px);
+  }
+}
+
+/* ----------------- Settings Modal ----------------- */
+.settings-modal {
+  border-radius: 16px;
+  padding: 32px 40px;
+  width: 80vw;
+  max-width: 580px;
+  color: #fff;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ----------------- Titles & Sections ----------------- */
+.settings-title {
+  font-size: 2rem;
+  font-family: "Rock 3D", system-ui;
+  margin-bottom: 28px;
+  text-shadow: 0 0 12px #00ffff66;
+}
+
+.runner-settings-section {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 16px;
+}
+
+.settings-section-title {
+  font-size: 1.2rem;
+  width: 140px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  white-space: nowrap;
+  text-align: left;
+  text-shadow: 0 0 8px #00ffff44;
+}
+
+/* ----------------- Toggle Switch ----------------- */
+.settings-toggle-switch {
+  width: 120px;
+  border: 2px solid #00ffff44;
+  border-radius: 8px;
+  padding: 8px 12px;
+  flex: 1;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: #0ff;
+  text-shadow: 0 0 10px #00ffff66;
+  margin-bottom: 10px;
+}
+
+.settings-toggle-switch.on {
+  background: rgba(0, 255, 255, 0.15);
+  flex: 1;
+  color: #0ff;
+}
+
+.settings-toggle-switch.off {
+  background: rgba(50, 50, 50, 0.6);
+  color: #777;
+  border-color: #444;
+  text-shadow: none;
+}
+
+.settings-toggle-switch:hover {
+  transform: scale(1.05);
+}
+
+/* ----------------- Sliders ----------------- */
+.settings-slider-group {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: 18px;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+.settings-slider-label {
+  color: #ccc;
+  text-align: left;
+  white-space: nowrap;
+  margin-bottom: 4px;
+  width: 200px;
+}
+
+.settings-slider {
+  width: 80%;
+  cursor: pointer;
+  accent-color: #00ffff;
+  transform: translateY(-4px);
+}
+
+/* ----------------- Status ----------------- */
+.settings-status {
+  margin-top: 16px;
+  font-size: 0.95rem;
+  color: #bbb;
+  text-shadow: 0 0 6px #000;
+  font-family: monospace;
+}
+
+/* ----------------- Close Button ----------------- */
+.settings-close-btn {
+  margin-top: 28px;
+  font-size: 1.2rem;
+  padding: 8px 16px;
+  background: transparent;
+  border-radius: 10px;
+  color: #0ff;
+  text-shadow: 0 0 12px #00ffff77;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: none;
+  font-family: "Barrio", system-ui;
+}
+
+.settings-close-btn:hover {
+  background: transparent;
+  color: #ff4800;
+  text-shadow: 0 0 18px #00ffff55;
+  transform: scale(1.05);
+  box-shadow: none;
+}
+
+/* ----------------- Floating Settings Button ----------------- */
+.settings-toggle-btn {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  background: transparent;
+  color: #fff;
+  font-size: 20px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease, text-shadow 0.2s;
+  z-index: 20;
+  text-shadow: 0 0 12px #00ffff22;
+  box-shadow: none;
+  box-shadow: none;
+}
+
+.settings-toggle-btn:hover {
+  background: transparent;
+  text-shadow: 0 0 18px #00ffff55;
+  transform: scale(1.05);
+  box-shadow: none;
+}
+
+/* StartGameScreen */
+.start-screen-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #080808ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.start-screen-box {
+  padding: 40px 60px;
+  text-align: center;
+  color: #fff;
+}
+
+.start-screen-title {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-family: "Sixtyfour Convergence", sans-serif;
+}
+
+.start-screen-text {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  /* font-family: "Rock 3D", system-ui; */
+}
+
+.start-screen-btn {
+  font-size: 1.5rem;
+  padding: 12px 28px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: #2cbdee;
+  text-shadow: 0 0 12px #00ffff77;
+  cursor: pointer;
+  font-family: "Barrio", system-ui;
+  transition: all 0.2s ease;
+  box-shadow: none;
+}
+
+.start-screen-btn:hover {
+  background: none;
+  color: #00a2ff;
+  text-shadow: 0 0 12px #00ffffc6;
+  transform: scale(1.05);
+  box-shadow: none;
+}
