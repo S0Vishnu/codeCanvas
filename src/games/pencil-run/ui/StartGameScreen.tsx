@@ -5,10 +5,10 @@ type StartGameScreenProps = {
 };
 
 export function StartGameScreen({ onStart }: StartGameScreenProps) {
-    const { playTrack } = useMusic();
+    const { playTrack, playSfx } = useMusic();
 
     const handleStart = () => {
-
+        playSfx("click");
         playTrack("theme", true);
         onStart();
     };
