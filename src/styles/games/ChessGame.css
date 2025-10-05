@@ -7,11 +7,12 @@
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     height: 100vh;
     justify-content: space-evenly;
-    .container {
-        display: flex;
-        justify-content: space-between;
-        gap: 10vw;
-    }
+}
+
+.chess-container .container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10vw;
 }
 
 .chess-title {
@@ -28,12 +29,12 @@
     font-weight: 500;
 }
 
-.chess-moves{
+.chess-moves {
     position: relative;
     max-height: 70vh;
 }
 
-.table-container{
+.table-container {
     max-height: calc(100% - 36px);
     overflow: hidden;
     overflow-y: auto;
@@ -127,4 +128,60 @@
 .chess-over-content p {
     font-size: 1.2rem;
     margin-bottom: 20px;
+}
+
+/* ===== Mobile Styles ===== */
+@media (max-width: 768px) {
+    .chess-container .container {
+        flex-direction: column;
+        gap: 10px;
+        #chessboard-board{
+            width: 90vw !important;
+            height: 90vw !important;
+        }
+    }
+
+    .chess-title {
+        font-size: 1.5rem;
+    }
+
+    .chess-info {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .chess-moves table {
+        width: 90vw;
+        font-size: 0.9rem;
+    }
+
+    .chess-button {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    .chess-start-screen {
+        padding: 30px;
+        gap: 15px;
+    }
+
+    .chess-controls {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .chess-over-content {
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .chess-over-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .chess-over-content p {
+        font-size: 1rem;
+    }
 }
