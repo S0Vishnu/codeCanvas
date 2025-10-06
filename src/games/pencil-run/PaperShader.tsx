@@ -20,6 +20,7 @@ const PaperShader: React.FC<{ speed: number }> = ({ speed }) => {
             uStripeColor: { value: STRIPE_COLOR },
             uTotalLineHeight: { value: TOTAL_LINE_HEIGHT },
         }),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 

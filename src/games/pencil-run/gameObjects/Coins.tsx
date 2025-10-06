@@ -4,7 +4,7 @@ import { useGLTF } from "@react-three/drei";
 import { Group } from "three";
 
 const Coins: React.FC = () => {
-  const { scene } = useGLTF("/assets/pencil-run-gltf/coin.glb") as any;
+  const { scene } = useGLTF("/assets/pencil-run-gltf/coin.glb");
   const coinRef = useRef<Group>(null);
   const ROTATION_SPEED = 2;
 

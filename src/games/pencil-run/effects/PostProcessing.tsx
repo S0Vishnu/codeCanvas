@@ -1,14 +1,14 @@
 import { CameraShake, Environment, Stars } from "@react-three/drei";
-import { useLoader } from "@react-three/fiber";
-import { SRGBColorSpace, TextureLoader } from "three";
-import { Bloom, BrightnessContrast, EffectComposer, HueSaturation, Vignette } from "@react-three/postprocessing";
+import {
+    Bloom,
+    BrightnessContrast,
+    EffectComposer,
+    HueSaturation,
+    Vignette,
+} from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 
-import bg from "../assets/sky_27_2k.webp";
-
 const PostProcessing = () => {
-    const texture = useLoader(TextureLoader, bg);
-    texture.colorSpace = SRGBColorSpace;
     const config = {
         maxYaw: 0.1,
         maxPitch: 0.1,
@@ -20,7 +20,7 @@ const PostProcessing = () => {
         decay: false,
         decayRate: 0.65,
         controls: undefined,
-    }
+    };
 
     return (
         <>

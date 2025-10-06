@@ -54,6 +54,7 @@ const SFX: Sfx[] = [
 
 const MusicContext = createContext<MusicContextType | null>(null);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useMusic = () => {
     const ctx = useContext(MusicContext);
     if (!ctx) throw new Error("useMusic must be used within MusicProvider");

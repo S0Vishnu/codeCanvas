@@ -1,7 +1,7 @@
 import { useGLTF } from "@react-three/drei";
 
 const PowerUps = () => {
-  const gltf = useGLTF("/assets/pencil-run-gltf/mushroom.glb", true) as any;
+  const gltf = useGLTF("/assets/pencil-run-gltf/mushroom.glb", true);
 
   // Clone the scene so each instance is independent
   const mushroom = gltf.scene.clone();

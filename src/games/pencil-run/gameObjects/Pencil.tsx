@@ -47,6 +47,7 @@ const Pencil: React.FC<{ scale: number }> = ({ scale }) => {
     fadeOffset: { value: 0.5 },
     fadeSmoothness: { value: 0.5 },
     fadeRotation: { value: 0.1 },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }), []);
 
   // Animation loop for shader

@@ -4,7 +4,7 @@ import { useInput } from "../hooks/inputContext";
 
 export function SettingsUI() {
     const { playSfx, setVolume, setSfxVolume, volume, sfxVolume } = useMusic();
-    const [_, setInput] = useInput();
+    const [input, setInput] = useInput();
 
     const [open, setOpen] = useState(false);
     const [musicEnabled, setMusicEnabled] = useState(true);
@@ -24,17 +24,22 @@ export function SettingsUI() {
         setSfxEnabled(!sfxEnabled);
     };
 
+    const openSettings = () => {
+        setOpen(true);
+        playSfx("click");
+        setInput({ ...input, paused: true });
+    };
+
+    const closeSettings = () => {
+        setOpen(false);
+        playSfx("click");
+        setInput({ ...input, paused: false });
+    };
+
     return (
         <>
             {/* ⚙️ Floating Settings Button */}
-            <button
-                className="settings-toggle-btn"
-                onClick={() => {
-                    setOpen(true);
-                    playSfx("click");
-                    setInput((s) => ({ ...s, paused: true }));
-                }}
-            >
+            <button className="settings-toggle-btn" onClick={openSettings}>
                 ⚙️
             </button>
 
@@ -49,18 +54,14 @@ export function SettingsUI() {
                             <h3 className="settings-section-title">Music</h3>
 
                             <button
-                                className={`settings-toggle-switch ${
-                                    musicEnabled ? "on" : "off"
-                                }`}
+                                className={`settings-toggle-switch ${musicEnabled ? "on" : "off"}`}
                                 onClick={toggleMusic}
                             >
                                 {musicEnabled ? "On" : "Off"}
                             </button>
                         </section>
                         <div className="settings-slider-group">
-                            <label className="settings-slider-label">
-                                Music Volume
-                            </label>
+                            <label className="settings-slider-label">Music Volume</label>
                             <input
                                 type="range"
                                 min={0}
@@ -68,32 +69,24 @@ export function SettingsUI() {
                                 step={0.1}
                                 value={volume}
                                 disabled={musicEnabled ? false : true}
-                                onChange={(e) =>
-                                    setVolume(parseFloat(e.target.value))
-                                }
+                                onChange={(e) => setVolume(parseFloat(e.target.value))}
                                 className="settings-slider"
                             />
                         </div>
 
                         {/* 🔊 SFX Settings */}
                         <section className="runner-settings-section">
-                            <h3 className="settings-section-title">
-                                Sound Effects
-                            </h3>
+                            <h3 className="settings-section-title">Sound Effects</h3>
 
                             <button
-                                className={`settings-toggle-switch ${
-                                    sfxEnabled ? "on" : "off"
-                                }`}
+                                className={`settings-toggle-switch ${sfxEnabled ? "on" : "off"}`}
                                 onClick={toggleSfx}
                             >
                                 {sfxEnabled ? "On" : "Off"}
                             </button>
                         </section>
                         <div className="settings-slider-group">
-                            <label className="settings-slider-label">
-                                SFX Volume
-                            </label>
+                            <label className="settings-slider-label">SFX Volume</label>
                             <input
                                 type="range"
                                 min={0}
@@ -101,9 +94,7 @@ export function SettingsUI() {
                                 step={0.01}
                                 disabled={sfxEnabled ? false : true}
                                 value={sfxVolume}
-                                onChange={(e) =>
-                                    setSfxVolume(parseFloat(e.target.value))
-                                }
+                                onChange={(e) => setSfxVolume(parseFloat(e.target.value))}
                                 className="settings-slider"
                             />
                         </div>
@@ -113,14 +104,7 @@ export function SettingsUI() {
                             {sfxEnabled ? "🔊 On" : "🚫 Off"}
                         </div>
 
-                        <button
-                            className="settings-close-btn"
-                            onClick={() => {
-                                setOpen(false);
-                                playSfx("click");
-                                setInput((s) => ({ ...s, paused: false }));
-                            }}
-                        >
+                        <button className="settings-close-btn" onClick={closeSettings}>
                             ✖ Close
                         </button>
                     </div>
