@@ -21,35 +21,74 @@ export function InputProvider({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
+    // ---- Keyboard Controls ----
     const onDown = (e: KeyboardEvent) => {
       if (e.code === "ArrowLeft" || e.code === "KeyA") {
-        setState(s => ({ ...s, left: true }));
+        setState((s) => ({ ...s, left: true }));
       }
       if (e.code === "ArrowRight" || e.code === "KeyD") {
-        setState(s => ({ ...s, right: true }));
+        setState((s) => ({ ...s, right: true }));
       }
       if (e.code === "Escape" || e.code === "KeyP") {
-        // toggle pause
-        setState(s => ({ ...s, paused: !s.paused }));
+        setState((s) => ({ ...s, paused: !s.paused }));
       }
     };
 
     const onUp = (e: KeyboardEvent) => {
       if (e.code === "ArrowLeft" || e.code === "KeyA") {
-        setState(s => ({ ...s, left: false }));
+        setState((s) => ({ ...s, left: false }));
       }
       if (e.code === "ArrowRight" || e.code === "KeyD") {
-        setState(s => ({ ...s, right: false }));
+        setState((s) => ({ ...s, right: false }));
       }
-      // no need to handle pause on keyup, it's toggled on keydown
     };
 
     window.addEventListener("keydown", onDown);
     window.addEventListener("keyup", onUp);
 
+    // ---- Touch Controls ----
+    let startX: number | null = null;
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        startX = e.touches[0].clientX;
+      }
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (startX === null || e.touches.length === 0) return;
+
+      const currentX = e.touches[0].clientX;
+      const diff = currentX - startX;
+
+      const threshold = 30; // pixels before it counts as a "drag"
+      if (diff > threshold) {
+        // dragging right
+        setState((s) => ({ ...s, left: false, right: true }));
+      } else if (diff < -threshold) {
+        // dragging left
+        setState((s) => ({ ...s, right: false, left: true }));
+      } else {
+        // not enough movement to count
+        setState((s) => ({ ...s, left: false, right: false }));
+      }
+    };
+
+    const onTouchEnd = () => {
+      startX = null;
+      setState((s) => ({ ...s, left: false, right: false }));
+    };
+
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("touchend", onTouchEnd);
+
     return () => {
       window.removeEventListener("keydown", onDown);
       window.removeEventListener("keyup", onUp);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
     };
   }, []);
 
