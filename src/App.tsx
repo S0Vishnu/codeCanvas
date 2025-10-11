@@ -11,6 +11,7 @@ import BatchImageConverter from "./pages/ImageConverter";
 import ImageEnhancer from "./pages/ImageEnhancer";
 import ChessGame from "./games/Chess";
 import PencilRunGame from "./games/pencil-run/PencilRunGame";
+import VideoCompressor from "./pages/VideoCompressor";
 
 function App() {
     return (
@@ -29,6 +30,8 @@ function App() {
                 <Route path="/chess" element={<ChessGame />} />
                 <Route path="/pencil-runner" element={<PencilRunGame />} />
                 {/* projects */}
+                {/* test */}
+                <Route path="/video-compressor" element={<VideoCompressor />} />
             </Routes>
         </>
     );

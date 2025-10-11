@@ -63,6 +63,11 @@ const Pages = () => {
             beta: true,
             thumbnail: "/thumbnails/enhancer.webp",
         },
+        {
+            name: "Video Compressor",
+            path: "/video-compressor",
+            category: "Tools",
+        },
         // Projects (Coming Soon)
         { name: "Coming Soon", path: "/", category: "Projects" },
         // Games
