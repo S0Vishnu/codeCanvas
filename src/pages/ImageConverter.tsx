@@ -62,10 +62,11 @@ const BatchFileConverter: React.FC = () => {
     };
 
     const convertFile = (file: File): Promise<ConvertedFile> => {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             const baseName = file.name.replace(/\.[^/.]+$/, "");
 
+            // Handle text conversion
             if (targetFormat === "text") {
                 reader.onload = () => {
                     resolve({
@@ -74,10 +75,12 @@ const BatchFileConverter: React.FC = () => {
                         type: "text",
                     });
                 };
+                reader.onerror = () => reject(new Error("Failed to read file as text"));
                 reader.readAsText(file);
                 return;
             }
 
+            // Handle image and binary formats
             if (
                 ["blob", "url", "base64", "png", "jpeg", "webp", "bmp", "gif", "avif"].includes(
                     targetFormat
@@ -90,113 +93,198 @@ const BatchFileConverter: React.FC = () => {
                         canvas.width = img.width;
                         canvas.height = img.height;
                         const ctx = canvas.getContext("2d");
-                        if (!ctx) return;
+                        if (!ctx) {
+                            reject(new Error("Could not get canvas context"));
+                            return;
+                        }
+
+                        // Draw image on canvas
                         ctx.drawImage(img, 0, 0);
 
                         if (targetFormat === "blob") {
                             canvas.toBlob((blob) => {
-                                resolve({
-                                    name: `${baseName}.blob`,
-                                    blob: blob || undefined,
-                                    type: "blob",
-                                });
+                                if (blob) {
+                                    resolve({
+                                        name: `${baseName}.blob`,
+                                        blob: blob,
+                                        type: "blob",
+                                    });
+                                } else {
+                                    reject(new Error("Failed to create blob"));
+                                }
                             }, "image/png");
                         } else if (targetFormat === "url") {
                             canvas.toBlob((blob) => {
-                                const url = blob ? URL.createObjectURL(blob) : "";
-                                resolve({
-                                    name: `${baseName}.url`,
-                                    url,
-                                    blob: blob || undefined,
-                                    type: "url",
-                                });
+                                if (blob) {
+                                    const url = URL.createObjectURL(blob);
+                                    resolve({
+                                        name: `${baseName}.url`,
+                                        url,
+                                        blob: blob,
+                                        type: "url",
+                                    });
+                                } else {
+                                    reject(new Error("Failed to create blob for URL"));
+                                }
                             }, "image/png");
                         } else if (targetFormat === "base64") {
-                            const base64 = canvas.toDataURL("image/png", 1.0);
-                            resolve({ name: `${baseName}.b64.txt`, text: base64, type: "base64" });
+                            try {
+                                const base64 = canvas.toDataURL("image/png", 1.0);
+                                resolve({
+                                    name: `${baseName}.b64.txt`,
+                                    text: base64,
+                                    type: "base64",
+                                });
+                            } catch (error) {
+                                console.log("error: ", error);
+                                reject(new Error("Failed to convert to base64"));
+                            }
                         } else {
-                            const converted = canvas.toDataURL(`image/${targetFormat}`, 1.0);
-                            resolve({
-                                name: `${baseName}.${targetFormat}`,
-                                url: converted,
-                                type: targetFormat,
-                            });
+                            try {
+                                const mimeType =
+                                    targetFormat === "jpeg"
+                                        ? "image/jpeg"
+                                        : `image/${targetFormat}`;
+                                const converted = canvas.toDataURL(mimeType, 1.0);
+                                resolve({
+                                    name: `${baseName}.${targetFormat}`,
+                                    url: converted,
+                                    type: targetFormat,
+                                });
+                            } catch (error) {
+                                console.log("error: ", error);
+                                reject(new Error(`Failed to convert to ${targetFormat}`));
+                            }
                         }
                     };
+
+                    img.onerror = () => reject(new Error("Failed to load image"));
+
                     if (event.target?.result) {
                         img.src = event.target.result as string;
+                    } else {
+                        reject(new Error("No data loaded from file"));
                     }
                 };
+
+                reader.onerror = () => reject(new Error("Failed to read file"));
                 reader.readAsDataURL(file);
+            } else {
+                reject(new Error(`Unsupported format: ${targetFormat}`));
             }
         });
     };
 
     const handleConvertAll = async () => {
         if (selectedFiles.length === 0) return;
+
         setIsConverting(true);
         const results: ConvertedFile[] = [];
+        const errors: string[] = [];
 
         for (const file of selectedFiles) {
-            const converted = await convertFile(file);
-            results.push(converted);
+            try {
+                const converted = await convertFile(file);
+                results.push(converted);
+            } catch (error) {
+                console.error(`Failed to convert ${file.name}:`, error);
+                errors.push(
+                    `${file.name}: ${error instanceof Error ? error.message : "Unknown error"}`
+                );
+            }
         }
 
         setConvertedFiles(results);
         setIsConverting(false);
+
+        if (errors.length > 0) {
+            alert(`Some files failed to convert:\n${errors.join("\n")}`);
+        }
     };
 
     const handleDownload = (file: ConvertedFile) => {
-        if (file.blob) {
-            saveAs(file.blob, file.name);
-        } else if (file.url) {
-            const link = document.createElement("a");
-            link.href = file.url;
-            link.download = file.name;
-            link.click();
-        } else if (file.text) {
-            const blob = new Blob([file.text], { type: "text/plain;charset=utf-8" });
-            saveAs(blob, file.name);
+        try {
+            if (file.blob) {
+                saveAs(file.blob, file.name);
+            } else if (file.url) {
+                const link = document.createElement("a");
+                link.href = file.url;
+                link.download = file.name;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // Clean up object URL if it's a blob URL
+                if (file.url.startsWith("blob:")) {
+                    setTimeout(() => URL.revokeObjectURL(file.url!), 100);
+                }
+            } else if (file.text) {
+                const blob = new Blob([file.text], { type: "text/plain;charset=utf-8" });
+                saveAs(blob, file.name);
+            }
+        } catch (error) {
+            console.error("Download failed:", error);
+            alert("Download failed. The file might be too large.");
         }
     };
 
     const handleDownloadAll = async () => {
-        const zip = new JSZip();
-        convertedFiles.forEach((file) => {
-            if (file.blob) {
-                zip.file(file.name, file.blob);
-            } else if (file.text) {
-                zip.file(file.name, file.text);
-            } else if (file.url) {
-                const base64Data = file.url.split(",")[1];
-                zip.file(file.name, base64Data, { base64: true });
+        try {
+            const zip = new JSZip();
+
+            for (const file of convertedFiles) {
+                if (file.blob) {
+                    zip.file(file.name, file.blob);
+                } else if (file.text) {
+                    zip.file(file.name, file.text);
+                } else if (file.url && file.url.startsWith("data:")) {
+                    const base64Data = file.url.split(",")[1];
+                    zip.file(file.name, base64Data, { base64: true });
+                } else if (file.url) {
+                    // Handle blob URLs by fetching and converting to blob
+                    try {
+                        const response = await fetch(file.url);
+                        const blob = await response.blob();
+                        zip.file(file.name, blob);
+                    } catch (error) {
+                        console.error(`Failed to add ${file.name} to ZIP:`, error);
+                    }
+                }
             }
-        });
-        const blob = await zip.generateAsync({ type: "blob" });
-        saveAs(blob, "converted_files.zip");
+
+            const blob = await zip.generateAsync({ type: "blob" });
+            saveAs(blob, "converted_files.zip");
+        } catch (error) {
+            console.error("ZIP creation failed:", error);
+            alert("Failed to create ZIP file. Some files might be too large.");
+        }
     };
 
     const copyToClipboard = async (file: ConvertedFile) => {
         try {
             if (file.text) {
                 await navigator.clipboard.writeText(file.text);
-            } else if (file.blob || file.url) {
-                // Convert to blob if URL is present but blob is not
-                let blob = file.blob;
-                if (!blob && file.url) {
-                    const response = await fetch(file.url);
-                    blob = await response.blob();
-                }
-                if (blob) {
-                    await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
-                } else {
-                    throw new Error("No data to copy");
-                }
+            } else if (file.blob) {
+                await navigator.clipboard.write([
+                    new ClipboardItem({ [file.blob.type]: file.blob }),
+                ]);
+            } else if (file.url && file.url.startsWith("data:")) {
+                // For data URLs, extract base64 and create a blob
+                const response = await fetch(file.url);
+                const blob = await response.blob();
+                await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+            } else if (file.url) {
+                // For blob URLs, fetch and create clipboard item
+                const response = await fetch(file.url);
+                const blob = await response.blob();
+                await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+            } else {
+                throw new Error("No data to copy");
             }
             alert("Copied to clipboard!");
         } catch (err) {
             console.error("Copy failed:", err);
-            alert("Failed to copy.");
+            alert("Failed to copy. The content might be too large for clipboard.");
         }
     };
 
@@ -231,6 +319,9 @@ const BatchFileConverter: React.FC = () => {
                             {selectedFiles.map((file, index) => (
                                 <div key={index} className="image-card">
                                     <p className="image-name">{file.name}</p>
+                                    <p className="file-size">
+                                        {(file.size / (1024 * 1024)).toFixed(2)} MB
+                                    </p>
                                     <button
                                         className="remove-btn"
                                         onClick={() => removeUploadedFile(index)}
@@ -258,11 +349,18 @@ const BatchFileConverter: React.FC = () => {
                     <button
                         className="convert-btn"
                         onClick={handleConvertAll}
-                        disabled={selectedFiles.length === 0}
+                        disabled={selectedFiles.length === 0 || isConverting}
                     >
-                        Convert All
+                        {isConverting ? "Converting..." : "Convert All"}
                     </button>
                 </div>
+
+                {isConverting && (
+                    <div className="results loading-container">
+                        <p>Converting files, please wait...</p>
+                        <div className="spinner"></div>
+                    </div>
+                )}
 
                 {convertedFiles.length > 0 && (
                     <div className="results">
@@ -283,11 +381,15 @@ const BatchFileConverter: React.FC = () => {
                         <div className="images-grid">
                             {convertedFiles.map((file, index) => (
                                 <div key={index} className="image-card">
-                                    {file.url && (
+                                    {file.url && file.type !== "base64" && (
                                         <img
                                             src={file.url}
                                             alt={file.name}
                                             className="image-preview"
+                                            onError={(e) => {
+                                                // Hide image if it fails to load (e.g., for non-image formats)
+                                                e.currentTarget.style.display = "none";
+                                            }}
                                         />
                                     )}
                                     <p className="image-name">{file.name}</p>
@@ -339,13 +441,6 @@ const BatchFileConverter: React.FC = () => {
                         </div>
                     </div>
                 )}
-
-                {isConverting && convertedFiles.length === 0 && (
-                    <div className="results loading-container">
-                        <p>Converting files, please wait...</p>
-                        <div className="spinner"></div>
-                    </div>
-                )}
             </div>
             {previewFile && (
                 <div className="preview-modal">
@@ -366,7 +461,12 @@ const BatchFileConverter: React.FC = () => {
                             />
                         )}
                         {previewFile.text && (
-                            <textarea value={previewFile.text} readOnly rows={12}></textarea>
+                            <textarea
+                                value={previewFile.text}
+                                readOnly
+                                rows={12}
+                                style={{ width: "100%", minHeight: "300px" }}
+                            ></textarea>
                         )}
                         <button className="close-btn" onClick={() => setPreviewFile(null)}>
                             X
