@@ -1,0 +1,143 @@
+.lorem-generator {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px;
+    color: #f8fafc;
+    border-radius: 12px;
+    padding: 4vh 0;
+    max-height: 100vh;
+    .dropdown-trigger {
+        padding: 6px 16px;
+    }
+}
+
+/* === Row Layout === */
+.lg-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.lg-input-count {
+    width: 100px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: #14171b;
+    color: #e2e8f0;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.lg-input-count:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* === Buttons === */
+.lg-btn {
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid #111111;
+    transition: all 0.2s ease;
+    max-width: fit-content;
+}
+
+.lg-generate-btn {
+    padding: 10px 16px;
+    background: #1a1c20;
+    color: #f8fafc;
+}
+
+.lg-generate-btn:hover {
+    background: #2563eb;
+    color: #fff;
+}
+
+.lg-generate-btn:active {
+    transform: scale(0.97);
+}
+
+.lg-copy-btn {
+    padding: 6px 12px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #3b82f6;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    max-width: fit-content;
+}
+
+.lg-copy-btn:hover {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+/* === Output Section === */
+.lg-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.lg-output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.lg-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.lg-output {
+    min-height: 50vh;
+    height: 75vh;
+    max-height: 75vh;
+    resize: vertical;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: #1e293b;
+    color: #e2e8f0;
+    outline: none;
+    font-family: monospace;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.lg-output:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* === Responsive === */
+@media (max-width: 600px) {
+    .lorem-generator {
+        padding: 16px;
+    }
+
+    .lg-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .lg-input-count {
+        width: 100%;
+    }
+}

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import "../styles/BatchImageConverter.css";
-import type { DropdownOption } from "../components/Dropdown";
-import Dropdown from "../components/Dropdown";
+import type { DropdownOption } from "../../components/Dropdown";
+import Dropdown from "../../components/Dropdown";
 import { FiDownload, FiTrash2, FiCopy, FiEye } from "react-icons/fi";
+import "../../styles/BatchImageConverter.css";
 
 // extended output options
 type SupportedFormat =

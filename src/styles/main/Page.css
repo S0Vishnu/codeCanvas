@@ -24,6 +24,19 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    &::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* === Focus & Active States === */
+    &:focus,
+    &:active {
+        outline: 1px solid #0884f8;
+        outline-offset: -1px;
+        border: none;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0 3px rgba(8, 132, 248, 0.3);
+    }
 }
 
 .category-toggle {
@@ -111,6 +124,68 @@
     border-radius: 8px;
 }
 
+/* === Dashboard Layout with Sidebar === */
+.dashboard-layout {
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    padding: 1rem;
+    height: fit-content;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #f5f5f5;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 6px;
+}
+
+.sidebar-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sidebar-item {
+    padding: 8px 12px;
+    border-radius: 10px;
+    color: #ddd;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    text-align: start;
+    background: transparent;
+    box-shadow: none;
+}
+
+.sidebar-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.sidebar-item.active {
+    background: #0884f8;
+    color: #fff;
+}
+
+/* Main Content */
+.dashboard-main-content {
+    flex: 1;
+    padding-left: 18px;
+}
+
 /* === Mobile Styles === */
 @media (max-width: 1024px) {
     .cards-grid {
@@ -147,5 +222,29 @@
     .category-toggle button {
         padding: 6px 10px;
         font-size: 0.85rem;
+    }
+}
+
+/* === Responsive Sidebar Layout === */
+@media (max-width: 1024px) {
+    .dashboard-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 0.5rem;
+    }
+
+    .sidebar-list {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .sidebar-item {
+        flex-shrink: 0;
     }
 }

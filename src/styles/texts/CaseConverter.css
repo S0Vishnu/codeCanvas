@@ -1,0 +1,135 @@
+.case-converter {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px;
+    color: #f8fafc;
+    border-radius: 12px;
+    padding: 10vh 0;
+}
+
+.case-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.case-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.case-textarea {
+    min-height: 150px;
+    resize: vertical;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: #14171b;
+    color: #e2e8f0;
+    outline: none;
+    font-family: monospace;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.case-textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* === Buttons Section === */
+.case-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+}
+
+.case-btn {
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    background: #1a1c20;
+    border: 1px solid #111111;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #f8fafc;
+    transition: all 0.2s ease;
+}
+
+.case-btn:hover {
+    background: #2563eb;
+    color: #fff;
+}
+
+.case-btn:active {
+    transform: scale(0.97);
+}
+
+.case-header,
+.case-output-header,
+.case-input-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+/* === Output Header === */
+
+.case-copy-btn {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #3b82f6;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 6px 12px;
+    transition: all 0.2s ease;
+    max-width: fit-content;
+}
+
+.case-copy-btn:hover {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+/* === Output Textarea === */
+.case-output {
+    min-height: 150px;
+    font-family: monospace;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px;
+    color: #e2e8f0;
+    resize: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.case-output:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* === Responsive === */
+@media (max-width: 600px) {
+    .case-converter {
+        padding: 16px;
+    }
+
+    .case-buttons {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .case-textarea,
+    .case-output {
+        font-size: 14px;
+    }
+}

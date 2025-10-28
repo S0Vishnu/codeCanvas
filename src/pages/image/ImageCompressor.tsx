@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import imageCompression from "browser-image-compression";
 import JSZip from "jszip";
-import "../styles/ImageCompressor.css";
+import "../../styles/ImageCompressor.css";
 
 type ImageItem = {
     id: string;
@@ -430,11 +430,11 @@ const ImageCompressor: React.FC = () => {
                 if (img.compressedFile) {
                     const name = img.file.name.replace(/\.[^/.]+$/, "");
                     const extension = downloadFormat;
-                    const dimensionInfo = img.compressedDimensions
-                        ? `_${img.compressedDimensions.width}x${img.compressedDimensions.height}`
-                        : "";
+                    // const dimensionInfo = img.compressedDimensions
+                    //     ? `_${img.compressedDimensions.width}x${img.compressedDimensions.height}`
+                    //     : "";
                     zip.file(
-                        `${name}${dimensionInfo}-compressed.${extension}`,
+                        `${name}.${extension}`,
                         img.compressedFile,
                         {
                             binary: true,

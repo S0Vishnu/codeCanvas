@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState, type ChangeEvent } from "react";
-import "../styles/ImageEnhancer.css";
-import Controls from "../modules/imageEnhancer/Controls";
+import Controls from "../../modules/imageEnhancer/Controls";
+import "../../styles/ImageEnhancer.css";
 
 export type ImageEnhancerProps = {
     src?: string;

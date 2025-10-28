@@ -1,0 +1,143 @@
+.ts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    max-width: 85vw;
+    height: 100vh;
+    margin: 0 auto;
+    padding: 24px;
+    color: #f8fafc;
+    border-radius: 12px;
+    padding: 6vh 0;
+}
+
+/* === Labels === */
+.ts-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* === Textarea === */
+.ts-textarea {
+    width: 100%;
+    min-height: 32vh;
+    padding: 12px;
+    font-family: monospace;
+    font-size: 15px;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    background: #14171b;
+    color: #e2e8f0;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ts-textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* === Controls === */
+.ts-controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* === Buttons === */
+.ts-btn {
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid #111111;
+    background: #1a1c20;
+    color: #f8fafc;
+    padding: 10px 14px;
+    max-width: fit-content;
+}
+
+.ts-btn:hover {
+    background: #2563eb;
+    color: #fff;
+}
+
+.ts-btn:active {
+    transform: scale(0.97);
+}
+
+/* === Button Variants === */
+.ts-btn-active {
+    background: #2563eb;
+    color: #fff;
+}
+
+.ts-btn-outline {
+    background: none;
+    border: 1px dashed #475569;
+    color: #94a3b8;
+}
+
+.ts-btn-main {
+    background: #2563eb;
+    color: #fff;
+    font-weight: 600;
+    width: 100%;
+    border: none;
+}
+
+.ts-btn-main:hover {
+    background: #1d4ed8;
+}
+
+.ts-btn-copy {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #3b82f6;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 6px 12px;
+    transition: all 0.2s ease;
+    max-width: fit-content;
+}
+
+.ts-btn-copy:hover {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+/* === Output Section === */
+.ts-output-section {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 80px;
+}
+
+.ts-output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+/* === Responsive === */
+@media (max-width: 600px) {
+    .ts-container {
+        padding: 16px;
+    }
+
+    .ts-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

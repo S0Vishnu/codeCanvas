@@ -1,0 +1,149 @@
+.rdg-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px;
+    color: #f8fafc;
+    border-radius: 12px;
+    padding: 10vh 0;
+    .dropdown-trigger {
+        padding: 8px 16px;
+    }
+}
+
+.rdg-header,
+.rdg-control-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+}
+
+/* === Controls Row === */
+.rdg-controls {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.rdg-input {
+    width: 120px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: #14171b;
+    color: #e2e8f0;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.rdg-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* === Buttons === */
+.rdg-btn {
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid #111111;
+    transition: all 0.2s ease;
+    max-width: fit-content;
+}
+
+.rdg-generate-btn {
+    padding: 10px 16px;
+    background: #1a1c20;
+    color: #f8fafc;
+    margin-left: auto;
+}
+
+.rdg-generate-btn:hover {
+    background: #2563eb;
+    color: #fff;
+}
+
+.rdg-generate-btn:active {
+    transform: scale(0.97);
+}
+
+.rdg-copy-btn {
+    padding: 6px 12px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: #3b82f6;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    max-width: fit-content;
+}
+
+.rdg-copy-btn:hover {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+/* === Output Section === */
+.rdg-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.rdg-output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.rdg-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rdg-output {
+    min-height: 300px;
+    resize: vertical;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: #1e293b;
+    color: #e2e8f0;
+    outline: none;
+    font-family: monospace;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.rdg-output:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* === Responsive === */
+@media (max-width: 600px) {
+    .rdg-container {
+        padding: 16px;
+    }
+
+    .rdg-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .rdg-input {
+        width: 100%;
+    }
+}

@@ -3,9 +3,9 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Stage, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
-import "../styles/GltfCompressor.css";
-import ReactComponentGenerator from "../modules/gltf/ReactComponentGenerator";
+import ReactComponentGenerator from "../../modules/gltf/ReactComponentGenerator";
 import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import "../../styles/GltfCompressor.css";
 
 type UploadedModelProps = { url: string };
 const UploadedModel = ({ url }: UploadedModelProps) => {
