@@ -29,8 +29,7 @@ export function DuplicateRemover() {
 
             if (removed > 0) {
                 addToast(
-                    `Removed ${removed} duplicate line${
-                        removed !== 1 ? "s" : ""
+                    `Removed ${removed} duplicate line${removed !== 1 ? "s" : ""
                     } (${totalLines} → ${uniqueLines.length})`,
                     "success"
                 );
@@ -74,30 +73,35 @@ export function DuplicateRemover() {
     };
 
     return (
-        <div className="duplicate-remover">
-            <div className="dr-section">
-                <label className="dr-label">Input Text</label>
+        <div className="page-container flex-col gap-lg h-fit max-w-3xl mx-auto">
+            <div className="flex-col gap-sm">
+                <h2 className="text-title text-gradient">Duplicate Line Remover</h2>
+                <p className="text-subtitle">Remove duplicate lines from your text automatically</p>
+            </div>
+
+            <div className="glass-panel p-6 flex-col gap-md">
+                <label className="label-text">Input Text</label>
                 <textarea
                     placeholder="Enter text with duplicate lines..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    className="dr-textarea"
+                    className="input-field min-h-[200px] font-mono resize-y"
                 />
+
+                <button onClick={handleRemoveDuplicates} className="btn-base btn-primary w-full">
+                    Remove Duplicates
+                </button>
             </div>
 
-            <button onClick={handleRemoveDuplicates} className="dr-btn dr-action-btn">
-                Remove Duplicates
-            </button>
-
             {output && (
-                <div className="dr-section">
-                    <div className="dr-output-header">
-                        <label className="dr-label">Output</label>
-                        <button onClick={handleCopy} className="dr-btn dr-copy-btn">
-                            Copy
+                <div className="glass-panel p-6 flex-col gap-md">
+                    <div className="flex-row justify-between items-center">
+                        <label className="label-text">Result</label>
+                        <button onClick={handleCopy} className="btn-base btn-secondary text-xs px-3 py-1">
+                            Copy Result
                         </button>
                     </div>
-                    <textarea value={output} readOnly className="dr-output" />
+                    <textarea value={output} readOnly className="input-field min-h-[50vh] font-mono resize-y bg-black/40" />
                 </div>
             )}
         </div>

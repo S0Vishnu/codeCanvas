@@ -266,12 +266,12 @@ export default function GLTFCompressorPage() {
 
     return (
         <div
-            className={`compressor-container ${dragOver ? "drag-over" : ""}`}
+            className={`w-full h-screen relative bg-gradient-to-br from-slate-900 to-black overflow-hidden font-sans ${dragOver ? "opacity-90" : ""}`}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
         >
-            <Canvas className="viewer" onCreated={({ scene }) => (sceneRef.current = scene)}>
+            <Canvas className="w-full h-full block" onCreated={({ scene }) => (sceneRef.current = scene)}>
                 <ambientLight intensity={0.5} />
                 <directionalLight position={[10, 10, 10]} intensity={1} />
                 <Stage adjustCamera={true} intensity={0.5}>
@@ -288,12 +288,16 @@ export default function GLTFCompressorPage() {
 
             {/* Overlay before any file is loaded */}
             {!modelUrl && (
-                <div className="overlay" onClick={openFileDialog}>
-                    <p>
-                        {dragOver
-                            ? "Release to upload your .glb/.gltf file"
-                            : "Click or drag & drop a .glb/.gltf file here"}
-                    </p>
+                <div className="absolute inset-0 flex-col flex-center z-10 bg-black/60 backdrop-blur-sm p-8 text-center cursor-pointer transition-colors hover:bg-black/70" onClick={openFileDialog}>
+                    <div className="glass-panel p-12 flex-col flex-center gap-md border-dashed border-2 border-white/20">
+                        <span className="text-6xl mb-4">📦</span>
+                        <p className="text-xl font-bold text-gradient">
+                            {dragOver
+                                ? "Release to upload your .glb/.gltf file"
+                                : "Click or drag & drop a .glb/.gltf file here"}
+                        </p>
+                        <p className="text-secondary">Supported formats: .glb, .gltf</p>
+                    </div>
                     <input
                         ref={fileInputRef}
                         type="file"
@@ -306,14 +310,14 @@ export default function GLTFCompressorPage() {
 
             {/* Compress Button */}
             {modelUrl && !isCompressing && (
-                <button className="btn compress-btn" onClick={handleCompress}>
+                <button className="btn-base btn-primary absolute top-4 right-4 z-20" onClick={handleCompress}>
                     Compress
                 </button>
             )}
 
             {/* Clear Scene Button */}
             {modelUrl && (
-                <button className="btn clear-btn" onClick={clearScene}>
+                <button className="btn-base btn-secondary absolute top-4 right-36 z-20" onClick={clearScene}>
                     Clear Scene
                 </button>
             )}
@@ -321,29 +325,28 @@ export default function GLTFCompressorPage() {
             {modelUrl && <ReactComponentGenerator url={modelUrl} />}
 
             {/* Compressing Overlay */}
-            {isCompressing && <div className="compressing-overlay">Compressing...</div>}
+            {isCompressing && (
+                <div className="absolute inset-0 z-30 flex-col flex-center bg-black/80 backdrop-blur-sm text-white pointer-events-none">
+                    <div className="spinner w-12 h-12 mb-4"></div>
+                    <div className="text-2xl font-bold mb-2">Compressing...</div>
+                    {compressionStep && (
+                        <p className="text-secondary">{compressionStep}</p>
+                    )}
+                </div>
+            )}
 
             {/* Stats Panel */}
             {stats && (
-                <div className="stats-panel">
-                    <h3>Compression Results</h3>
-                    <p>Original Vertices: {stats.originalVerts.toLocaleString()}</p>
-                    <p>Merged Vertices: {stats.mergedVerts.toLocaleString()}</p>
-                    <p>Vertex Reduction: {stats.reduction}%</p>
-                    <p>Original Geometries: {stats.originalGeom}</p>
-                    <p>Merged Geometries: {stats.mergedGeom}</p>
-                    <p>Total Texture Size: {stats.textureSize.toLocaleString()}px</p>
-                </div>
-            )}
-            {isCompressing && (
-                <div
-                    className="compressing-overlay"
-                    style={{ display: "flex", flexDirection: "column" }}
-                >
-                    <div>Compressing...</div>
-                    {compressionStep && (
-                        <p style={{ marginTop: 10, fontSize: "1rem" }}>{compressionStep}</p>
-                    )}
+                <div className="glass-card absolute bottom-4 left-4 p-5 text-sm z-20 w-[300px] pointer-events-none">
+                    <h3 className="text-lg font-bold mb-3 border-b border-white/10 pb-2">Compression Results</h3>
+                    <div className="flex-col gap-1">
+                        <div className="flex-row justify-between"><span className="text-secondary">Original Vertices:</span> <span>{stats.originalVerts.toLocaleString()}</span></div>
+                        <div className="flex-row justify-between"><span className="text-secondary">Merged Vertices:</span> <span className="text-primary">{stats.mergedVerts.toLocaleString()}</span></div>
+                        <div className="flex-row justify-between"><span className="text-secondary">Vertex Reduction:</span> <span className="text-success font-bold">{stats.reduction}%</span></div>
+                        <div className="flex-row justify-between"><span className="text-secondary">Original Geometries:</span> <span>{stats.originalGeom}</span></div>
+                        <div className="flex-row justify-between"><span className="text-secondary">Merged Geometries:</span> <span>{stats.mergedGeom}</span></div>
+                        <div className="flex-row justify-between"><span className="text-secondary">Total Texture Size:</span> <span>{(stats.textureSize / (1024 * 1024)).toFixed(2)} MP</span></div>
+                    </div>
                 </div>
             )}
         </div>

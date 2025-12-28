@@ -112,72 +112,81 @@ export function FindReplace() {
     };
 
     return (
-        <div className="find-replace">
-            <div className="fr-section">
-                <label className="fr-label">Input Text</label>
+        <div className="page-container flex-col gap-lg h-fit max-w-3xl mx-auto">
+            <div className="flex-col gap-sm">
+                <h2 className="text-title text-gradient">Find & Replace</h2>
+                <p className="text-subtitle">Search and replace text with advanced options</p>
+            </div>
+
+            <div className="glass-panel p-6 flex-col gap-md">
+                <label className="label-text">Input Text</label>
                 <textarea
                     placeholder="Enter text to search and replace..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    className="fr-textarea"
+                    className="input-field min-h-[150px] font-mono resize-y"
                 />
             </div>
 
-            <div className="fr-row">
-                <div className="fr-field">
-                    <label className="fr-label">Find</label>
-                    <input
-                        type="text"
-                        placeholder="Text to find"
-                        value={findText}
-                        onChange={(e) => setFindText(e.target.value)}
-                        className="fr-input"
-                    />
+            <div className="glass-panel p-6 flex-col gap-md">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex-col gap-sm">
+                        <label className="label-text">Find</label>
+                        <input
+                            type="text"
+                            placeholder="Text to find"
+                            value={findText}
+                            onChange={(e) => setFindText(e.target.value)}
+                            className="input-field"
+                        />
+                    </div>
+                    <div className="flex-col gap-sm">
+                        <label className="label-text">Replace</label>
+                        <input
+                            type="text"
+                            placeholder="Replace with"
+                            value={replaceText}
+                            onChange={(e) => setReplaceText(e.target.value)}
+                            className="input-field"
+                        />
+                    </div>
                 </div>
-                <div className="fr-field">
-                    <label className="fr-label">Replace</label>
-                    <input
-                        type="text"
-                        placeholder="Replace with"
-                        value={replaceText}
-                        onChange={(e) => setReplaceText(e.target.value)}
-                        className="fr-input"
-                    />
+
+                <div className="flex-row gap-lg">
+                    <label className="flex-row gap-sm items-center cursor-pointer text-secondary hover:text-white transition-colors">
+                        <input
+                            type="checkbox"
+                            checked={caseSensitive}
+                            onChange={(e) => setCaseSensitive(e.target.checked)}
+                            className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                        />
+                        Case sensitive
+                    </label>
+                    <label className="flex-row gap-sm items-center cursor-pointer text-secondary hover:text-white transition-colors">
+                        <input
+                            type="checkbox"
+                            checked={useRegex}
+                            onChange={(e) => setUseRegex(e.target.checked)}
+                            className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                        />
+                        Use regex
+                    </label>
                 </div>
-            </div>
 
-            <div className="fr-options">
-                <label className="fr-option">
-                    <input
-                        type="checkbox"
-                        checked={caseSensitive}
-                        onChange={(e) => setCaseSensitive(e.target.checked)}
-                    />
-                    Case sensitive
-                </label>
-                <label className="fr-option">
-                    <input
-                        type="checkbox"
-                        checked={useRegex}
-                        onChange={(e) => setUseRegex(e.target.checked)}
-                    />
-                    Use regex
-                </label>
+                <button onClick={handleReplace} disabled={!findText} className="btn-base btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed">
+                    Replace All
+                </button>
             </div>
-
-            <button onClick={handleReplace} disabled={!findText} className="fr-btn fr-action-btn">
-                Replace All
-            </button>
 
             {output && (
-                <div className="fr-section">
-                    <div className="fr-output-header">
-                        <label className="fr-label">Output</label>
-                        <button onClick={handleCopy} className="fr-btn fr-copy-btn">
-                            Copy
+                <div className="glass-panel p-6 flex-col gap-md">
+                    <div className="flex-row justify-between items-center">
+                        <label className="label-text">Output</label>
+                        <button onClick={handleCopy} className="btn-base btn-secondary text-xs px-3 py-1">
+                            Copy Result
                         </button>
                     </div>
-                    <textarea value={output} readOnly className="fr-output" />
+                    <textarea value={output} readOnly className="input-field min-h-[150px] font-mono resize-y bg-black/40" />
                 </div>
             )}
         </div>

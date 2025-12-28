@@ -1,51 +1,15 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* App-specific styles that don't fit in theme or components */
 
-.home-button{
+.home-button {
   position: fixed;
   padding: 4px;
   left: 12px;
   top: 12px;
   outline: none;
-  z-index: 100000000000000000;
+  z-index: 100;
 }
 
-.main-header{
+.main-header {
   margin-bottom: 12px;
   margin-left: 40px;
-}
-
-
-::-webkit-scrollbar,
-.uploaded-images .images-grid::-webkit-scrollbar,
-.results .images-grid::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track,
-.uploaded-images .images-grid::-webkit-scrollbar-track,
-.results .images-grid::-webkit-scrollbar-track {
-  background: rgba(30, 30, 30, 0.2);
-  backdrop-filter: blur(6px);
-  border-radius: 12px;
-}
-
-::-webkit-scrollbar-thumb,
-.uploaded-images .images-grid::-webkit-scrollbar-thumb,
-.results .images-grid::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  border: 3px solid rgba(30, 30, 30, 0.2);
-  backdrop-filter: blur(8px);
-  transition: background 0.2s;
-}
-
-::-webkit-scrollbar-thumb:hover,
-.uploaded-images .images-grid::-webkit-scrollbar-thumb:hover,
-.results .images-grid::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
 }

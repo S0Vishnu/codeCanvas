@@ -18,33 +18,40 @@ const EditorPanel = () => {
   }, [activeTab, setCode]);
 
   return (
-    <div className="editor-panel">
-      <div className="editor-tabs">
+    <div className="flex flex-col h-full w-full">
+      <div className="flex bg-black/40 border-b border-white/10">
         {TABS.map(tab => (
           <button
             key={tab}
-            className={activeTab === tab ? "active" : ""}
+            className={`flex-1 px-4 py-3 bg-transparent border-0 text-white cursor-pointer border-b-2 transition-colors ${activeTab === tab
+                ? "border-primary text-primary bg-primary/10"
+                : "border-transparent text-secondary hover:text-white hover:bg-white/5"
+              }`}
             onClick={() => setActiveTab(tab)}
           >
             {tab.toUpperCase()}
           </button>
         ))}
       </div>
-      <MonacoEditor
-        height="100%"
-        theme="vs-dark"
-        language={activeTab}
-        value={code[activeTab]}
-        onChange={handleEditorChange}
-        options={{
-          minimap: { enabled: false },
-          fontSize: 15,
-          automaticLayout: true,
-          wordWrap: "on",
-          autoClosingBrackets: "always",
-          autoClosingQuotes: "always",
-        }}
-      />
+      <div className="flex-1 w-full overflow-hidden">
+        <MonacoEditor
+          height="100%"
+          theme="vs-dark"
+          language={activeTab}
+          value={code[activeTab]}
+          onChange={handleEditorChange}
+          options={{
+            minimap: { enabled: false },
+            fontSize: 14,
+            fontFamily: "JetBrains Mono, monospace",
+            automaticLayout: true,
+            wordWrap: "on",
+            autoClosingBrackets: "always",
+            autoClosingQuotes: "always",
+            padding: { top: 16 },
+          }}
+        />
+      </div>
     </div>
   );
 };

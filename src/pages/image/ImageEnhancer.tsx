@@ -364,9 +364,9 @@ export const ImageEnhancer: React.FC<ImageEnhancerProps> = ({
     }, [draw]);
 
     return (
-        <div className={`image-enhancer ${className ?? ""}`}>
+        <div className={`page-container flex-row gap-lg items-start ${className ?? ""}`}>
             <div
-                className={`canvas-wrapper ${isPanning ? "panning" : ""}`}
+                className={`flex-1 glass-panel p-6 min-h-[500px] flex-center relative overflow-hidden ${isPanning ? "cursor-grabbing" : "cursor-grab"}`}
                 onDragOver={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -390,19 +390,23 @@ export const ImageEnhancer: React.FC<ImageEnhancerProps> = ({
                     ref={canvasRef}
                     aria-label="Image editor canvas"
                     role="img"
-                    className="canvas"
+                    className="max-w-full h-auto rounded-lg"
                 />
 
                 {/* Centered upload */}
                 {!currentSrc && (
-                    <label className="upload-dropzone">
+                    <label className="upload-zone w-full h-full border-none shadow-none bg-transparent">
+                        <div className="flex-col flex-center">
+                            <div className="upload-icon">📁</div>
+                            <span className="text-lg font-semibold text-white mb-2">Click or Drag & Drop an image</span>
+                            <span className="text-sm text-secondary">Supports JPG, PNG, WebP</span>
+                        </div>
                         <input
                             type="file"
                             accept="image/*"
                             onChange={handleUpload}
-                            className="upload-input"
+                            className="hidden"
                         />
-                        <span>Click or Drag & Drop an image</span>
                     </label>
                 )}
             </div>

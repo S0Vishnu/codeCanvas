@@ -290,43 +290,52 @@ const BatchFileConverter: React.FC = () => {
 
     return (
         <>
-            <div className="converter-container">
-                <h2 className="converter-title">Batch File Converter</h2>
+            <div className="page-container glass-panel p-6 flex-col gap-lg h-fit">
+                <div className="flex-col gap-sm flex-center">
+                    <h2 className="text-title text-gradient">Batch File Converter</h2>
+                    <p className="text-subtitle">Convert multiple files to different formats simultaneously</p>
+                </div>
 
-                <div className="file-input-wrapper">
+                <div className="upload-zone w-full">
                     <input
                         id="file-upload"
                         type="file"
                         accept="*/*"
                         multiple
                         onChange={handleFileChange}
-                        className="file-input-hidden"
+                        className="hidden"
                     />
-                    <label htmlFor="file-upload" className="file-input-label">
-                        📂 Choose Files
+                    <label htmlFor="file-upload" className="flex-col flex-center cursor-pointer w-full h-full">
+                        <div className="upload-icon">📂</div>
+                        <span className="text-lg font-semibold text-white">Choose Files</span>
+                        <span className="text-sm text-secondary mt-2">Supports images and text files</span>
                     </label>
                 </div>
 
                 {selectedFiles.length > 0 && (
-                    <div className="uploaded-images">
-                        <div className="header">
-                            <h4>Uploaded Files ({selectedFiles.length})</h4>
-                            <button className="clear-all-btn" onClick={clearAllUploaded}>
+                    <div className="flex-col gap-md">
+                        <div className="flex-row justify-between border-b border-white/10 pb-4">
+                            <h4 className="font-bold">Uploaded Files ({selectedFiles.length})</h4>
+                            <button className="btn-base btn-danger text-xs px-3 py-1" onClick={clearAllUploaded}>
                                 Clear All
                             </button>
                         </div>
-                        <div className="images-grid">
+                        <div className="grid-images">
                             {selectedFiles.map((file, index) => (
-                                <div key={index} className="image-card">
-                                    <p className="image-name">{file.name}</p>
-                                    <p className="file-size">
+                                <div key={index} className="glass-card flex-col gap-sm items-center relative group">
+                                    <div className="w-12 h-12 bg-white/5 rounded-full flex-center mb-2">
+                                        <span className="text-2xl">📄</span>
+                                    </div>
+                                    <p className="font-medium truncate w-full text-center" title={file.name}>{file.name}</p>
+                                    <p className="text-xs text-secondary">
                                         {(file.size / (1024 * 1024)).toFixed(2)} MB
                                     </p>
                                     <button
-                                        className="remove-btn"
+                                        className="absolute top-2 right-2 p-1 bg-red-500/80 hover:bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                         onClick={() => removeUploadedFile(index)}
+                                        title="Remove"
                                     >
-                                        Remove
+                                        <FiTrash2 size={12} />
                                     </button>
                                 </div>
                             ))}
@@ -334,9 +343,9 @@ const BatchFileConverter: React.FC = () => {
                     </div>
                 )}
 
-                <div className="convert-wrap">
-                    <div className="convert-format-select">
-                        <label>Convert to:</label>
+                <div className="glass-card p-6 flex-col gap-md">
+                    <div className="flex-col gap-sm">
+                        <label className="label-text">Convert to:</label>
                         <Dropdown
                             options={formatOptions}
                             value={targetFormat}
@@ -347,7 +356,7 @@ const BatchFileConverter: React.FC = () => {
                     </div>
 
                     <button
-                        className="convert-btn"
+                        className="btn-base btn-primary w-full"
                         onClick={handleConvertAll}
                         disabled={selectedFiles.length === 0 || isConverting}
                     >
@@ -356,86 +365,91 @@ const BatchFileConverter: React.FC = () => {
                 </div>
 
                 {isConverting && (
-                    <div className="results loading-container">
-                        <p>Converting files, please wait...</p>
-                        <div className="spinner"></div>
+                    <div className="flex-col flex-center py-8">
+                        <div className="spinner mb-4"></div>
+                        <p className="text-secondary">Converting files, please wait...</p>
                     </div>
                 )}
 
                 {convertedFiles.length > 0 && (
-                    <div className="results">
-                        <div className="header">
-                            <h3>Converted Files ({convertedFiles.length})</h3>
-                            <div className="header">
+                    <div className="flex-col gap-md">
+                        <div className="flex-row justify-between border-b border-white/10 pb-4">
+                            <h3 className="font-bold text-lg">Converted Files ({convertedFiles.length})</h3>
+                            <div className="flex-row gap-sm">
                                 <button
-                                    className="clear-all-btn"
+                                    className="btn-base btn-danger text-xs px-3 py-1"
                                     onClick={() => setConvertedFiles([])}
                                 >
                                     Clear All
                                 </button>
-                                <button className="download-all-btn" onClick={handleDownloadAll}>
+                                <button className="btn-base btn-success text-xs px-3 py-1" onClick={handleDownloadAll}>
                                     Download All (ZIP)
                                 </button>
                             </div>
                         </div>
-                        <div className="images-grid">
+                        <div className="grid-images">
                             {convertedFiles.map((file, index) => (
-                                <div key={index} className="image-card">
-                                    {file.url && file.type !== "base64" && (
-                                        <img
-                                            src={file.url}
-                                            alt={file.name}
-                                            className="image-preview"
-                                            onError={(e) => {
-                                                // Hide image if it fails to load (e.g., for non-image formats)
-                                                e.currentTarget.style.display = "none";
-                                            }}
-                                        />
-                                    )}
-                                    <p className="image-name">{file.name}</p>
+                                <div key={index} className="glass-card flex-col gap-sm relative group overflow-hidden">
+                                    <div className="aspect-video bg-black/40 rounded-lg overflow-hidden flex-center relative">
+                                        {file.url && file.type !== "base64" ? (
+                                            <img
+                                                src={file.url}
+                                                alt={file.name}
+                                                className="w-full h-full object-contain"
+                                                onError={(e) => {
+                                                    e.currentTarget.style.display = "none";
+                                                }}
+                                            />
+                                        ) : (
+                                            <div className="text-4xl">📄</div>
+                                        )}
+
+                                        {/* Overlay Actions */}
+                                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex-center gap-2">
+                                            <button
+                                                className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
+                                                onClick={() => copyToClipboard(file)}
+                                                title="Copy"
+                                            >
+                                                <FiCopy size={18} />
+                                            </button>
+                                            <button
+                                                className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
+                                                onClick={() => setPreviewFile(file)}
+                                                title="Preview"
+                                            >
+                                                <FiEye size={18} />
+                                            </button>
+                                            <button
+                                                className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
+                                                onClick={() => handleDownload(file)}
+                                                title="Download"
+                                            >
+                                                <FiDownload size={18} />
+                                            </button>
+                                            <button
+                                                className="p-2 bg-red-500/80 hover:bg-red-500 rounded-lg text-white transition-colors"
+                                                onClick={() =>
+                                                    setConvertedFiles((prev) =>
+                                                        prev.filter((_, i) => i !== index)
+                                                    )
+                                                }
+                                                title="Remove"
+                                            >
+                                                <FiTrash2 size={18} />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <p className="font-medium truncate w-full text-center text-sm" title={file.name}>{file.name}</p>
+
                                     {file.text && (
-                                        <div className="text-box">
-                                            <textarea
-                                                value={file.text}
-                                                readOnly
-                                                rows={6}
-                                            ></textarea>
+                                        <div className="w-full h-20 bg-black/20 rounded-md p-2 overflow-hidden">
+                                            <p className="text-xs font-mono text-secondary break-all line-clamp-3">
+                                                {file.text.substring(0, 100)}...
+                                            </p>
                                         </div>
                                     )}
-                                    <div className="image-actions">
-                                        <button
-                                            className="icon-btn"
-                                            onClick={() => copyToClipboard(file)}
-                                            title="Copy"
-                                        >
-                                            <FiCopy size={20} />
-                                        </button>
-                                        <button
-                                            className="icon-btn preview-btn"
-                                            onClick={() => setPreviewFile(file)}
-                                            title="Preview"
-                                        >
-                                            <FiEye size={20} />
-                                        </button>
-                                        <button
-                                            className="icon-btn download-btn"
-                                            onClick={() => handleDownload(file)}
-                                            title="Download"
-                                        >
-                                            <FiDownload size={20} />
-                                        </button>
-                                        <button
-                                            className="icon-btn remove-btn"
-                                            onClick={() =>
-                                                setConvertedFiles((prev) =>
-                                                    prev.filter((_, i) => i !== index)
-                                                )
-                                            }
-                                            title="Remove"
-                                        >
-                                            <FiTrash2 size={20} />
-                                        </button>
-                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -443,34 +457,41 @@ const BatchFileConverter: React.FC = () => {
                 )}
             </div>
             {previewFile && (
-                <div className="preview-modal">
-                    <div className="modal-content">
-                        <h4>{previewFile.name}</h4>
-                        {previewFile.blob && (
-                            <img
-                                src={URL.createObjectURL(previewFile.blob)}
-                                alt={previewFile.name}
-                                className="preview-img"
-                            />
-                        )}
-                        {previewFile.url && !previewFile.blob && (
-                            <img
-                                src={previewFile.url}
-                                alt={previewFile.name}
-                                className="preview-img"
-                            />
-                        )}
-                        {previewFile.text && (
-                            <textarea
-                                value={previewFile.text}
-                                readOnly
-                                rows={12}
-                                style={{ width: "100%", minHeight: "300px" }}
-                            ></textarea>
-                        )}
-                        <button className="close-btn" onClick={() => setPreviewFile(null)}>
-                            X
+                <div className="fixed inset-0 z-50 flex-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                    <div className="glass-panel p-6 max-w-[90vw] max-h-[90vh] overflow-auto relative w-full md:w-auto">
+                        <button
+                            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white"
+                            onClick={() => setPreviewFile(null)}
+                        >
+                            ✕
                         </button>
+
+                        <h4 className="text-xl font-bold mb-4 pr-12">{previewFile.name}</h4>
+
+                        <div className="flex-center bg-black/20 rounded-lg p-4 min-h-[300px]">
+                            {previewFile.blob && (
+                                <img
+                                    src={URL.createObjectURL(previewFile.blob)}
+                                    alt={previewFile.name}
+                                    className="max-w-full max-h-[70vh] object-contain rounded-lg"
+                                />
+                            )}
+                            {previewFile.url && !previewFile.blob && (
+                                <img
+                                    src={previewFile.url}
+                                    alt={previewFile.name}
+                                    className="max-w-full max-h-[70vh] object-contain rounded-lg"
+                                />
+                            )}
+                            {previewFile.text && (
+                                <textarea
+                                    value={previewFile.text}
+                                    readOnly
+                                    rows={12}
+                                    className="w-full min-w-[50vw] min-h-[50vh] bg-transparent border-none text-mono text-sm resize-none focus:outline-none"
+                                ></textarea>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

@@ -69,46 +69,59 @@ export function LoremGenerator() {
     };
 
     return (
-        <div className="lorem-generator">
-            <div className="lg-row">
-                <input
-                    type="number"
-                    min={1}
-                    max={100}
-                    value={count}
-                    onChange={(e) => setCount(parseInt(e.target.value) || 1)}
-                    className="lg-input-count"
-                />
+        <div className="page-container flex-col gap-lg h-fit max-w-3xl mx-auto">
+            <div className="flex-col gap-sm">
+                <h2 className="text-title text-gradient">Lorem Ipsum Generator</h2>
+                <p className="text-subtitle">Generate placeholder text for your projects</p>
+            </div>
 
-                <Dropdown
-                    options={[
-                        { label: "Paragraphs", value: "paragraphs" },
-                        { label: "Sentences", value: "sentences" },
-                        { label: "Words", value: "words" },
-                    ]}
-                    value={type}
-                    onChange={(val) => setType(val as typeof type)}
-                    placeholder="Select type"
-                    closeOnSelect
-                />
+            <div className="glass-panel p-6 flex-col gap-md">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div className="flex-col gap-sm">
+                        <label className="label-text">Length</label>
+                        <input
+                            type="number"
+                            min={1}
+                            max={100}
+                            value={count}
+                            onChange={(e) => setCount(parseInt(e.target.value) || 1)}
+                            className="input-field"
+                        />
+                    </div>
 
-                <button onClick={generateLorem} className="lg-btn lg-generate-btn">
-                    Generate
-                </button>
+                    <div className="flex-col gap-sm">
+                        <label className="label-text">Type</label>
+                        <Dropdown
+                            options={[
+                                { label: "Paragraphs", value: "paragraphs" },
+                                { label: "Sentences", value: "sentences" },
+                                { label: "Words", value: "words" },
+                            ]}
+                            value={type}
+                            onChange={(val) => setType(val as typeof type)}
+                            placeholder="Select type"
+                            closeOnSelect
+                        />
+                    </div>
+
+                    <button onClick={generateLorem} className="btn-base btn-primary h-[42px]">
+                        Generate
+                    </button>
+                </div>
             </div>
 
             {output && (
-                <div className="lg-section">
-                    <div className="lg-output-header">
-                        <label className="lg-label">Generated Text</label>
-                        <button onClick={handleCopy} className="lg-btn lg-copy-btn">
-                            Copy
+                <div className="glass-panel p-6 flex-col gap-md">
+                    <div className="flex-row justify-between items-center">
+                        <label className="label-text">Generated Text</label>
+                        <button onClick={handleCopy} className="btn-base btn-secondary text-xs px-3 py-1">
+                            Copy Result
                         </button>
                     </div>
                     <textarea
                         value={output}
                         readOnly
-                        className="lg-output"
+                        className="input-field min-h-[50vh] font-mono resize-y bg-black/40"
                         placeholder="Generated lorem ipsum will appear here..."
                     />
                 </div>

@@ -105,34 +105,48 @@ export const StringToArrayParser = () => {
     };
 
     return (
-        <div className="parser-container">
-            <h2 className="main-header">Convert JSON-like String to Object</h2>
-
-            <textarea
-                className="parser-textarea"
-                value={inputString}
-                onChange={(e) => setInputString(e.target.value)}
-            />
-
-            <div className="parser-buttons">
-                <button className="parser-button" onClick={handleConvert}>
-                    Convert
-                </button>
-                {JSON.stringify(result) !== "[]" && (
-                    <button
-                        className="parser-button"
-                        onClick={handleCopy}
-                        disabled={!result.length}
-                        title={!result.length ? "Convert first" : "Copy JSON to clipboard"}
-                    >
-                        {copied ? "✅ Copied!" : "Copy JSON"}
-                    </button>
-                )}
+        <div className="page-container flex-col gap-lg h-fit">
+            <div className="flex-col gap-sm">
+                <h2 className="text-title text-gradient">Object Parser</h2>
+                <p className="text-subtitle">Convert raw JS-like object strings into valid JSON</p>
             </div>
 
-            {error && <div className="parser-error">{error}</div>}
+            <div className="glass-panel p-6 flex-col gap-md">
+                <label className="label-text">Input Object String</label>
+                <textarea
+                    className="input-field min-h-[30vh] font-mono text-success bg-black/40"
+                    value={inputString}
+                    onChange={(e) => setInputString(e.target.value)}
+                    placeholder="Paste your object string here..."
+                />
 
-            <pre className="parser-output">{JSON.stringify(result, null, 2)}</pre>
+                <div className="flex-row gap-md">
+                    <button className="btn-base btn-primary" onClick={handleConvert}>
+                        Convert to Object
+                    </button>
+                    {JSON.stringify(result) !== "[]" && (
+                        <button
+                            className="btn-base btn-secondary"
+                            onClick={handleCopy}
+                            disabled={!result.length}
+                            title={!result.length ? "Convert first" : "Copy JSON to clipboard"}
+                        >
+                            {copied ? "✅ Copied!" : "Copy JSON"}
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {error && <div className="p-4 rounded-lg bg-red-500/20 border border-red-500/40 text-red-200">{error}</div>}
+
+            {result.length > 0 && (
+                <div className="glass-panel p-6 flex-col gap-md">
+                    <label className="label-text">Parsed Result (JSON)</label>
+                    <pre className="input-field min-h-[30vh] max-h-[50vh] overflow-y-auto font-mono text-xs bg-black/60">
+                        {JSON.stringify(result, null, 2)}
+                    </pre>
+                </div>
+            )}
         </div>
     );
 };

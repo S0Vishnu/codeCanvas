@@ -31,12 +31,12 @@ const PreviewPanel = () => {
   }, [code], 500);
 
   return (
-    <div className="preview-panel">
+    <div className="w-full h-full bg-white flex items-stretch justify-stretch">
       <iframe
         ref={iframeRef}
         title="Live Preview"
         sandbox="allow-scripts allow-same-origin"
-        className="preview-iframe"
+        className="w-full h-full border-none bg-white block"
       />
     </div>
   );

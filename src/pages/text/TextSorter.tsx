@@ -55,8 +55,7 @@ export function TextSorter() {
             const order = sortOrder === "asc" ? "ascending" : "descending";
 
             addToast(
-                `Sorted ${lineCount} line${
-                    lineCount !== 1 ? "s" : ""
+                `Sorted ${lineCount} line${lineCount !== 1 ? "s" : ""
                 } in ${order} order, Original lines ${originalLength}`,
                 "success"
             );
@@ -99,56 +98,60 @@ export function TextSorter() {
     };
 
     return (
-        <div className="ts-container">
-            {/* Input */}
-            <div>
-                <label className="ts-label">Input Text</label>
-                <textarea
-                    placeholder="Enter lines to sort..."
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    className="ts-textarea"
-                />
+        <div className="page-container flex-col gap-lg h-fit max-w-3xl mx-auto">
+            <div className="flex-col gap-sm">
+                <h2 className="text-title text-gradient">Text Sorter</h2>
+                <p className="text-subtitle">Sort lines of text alphabetically or numerically</p>
             </div>
 
-            {/* Controls */}
-            <div className="ts-controls">
-                <Dropdown
-                    options={[
-                        { label: "Ascending (A–Z)", value: "asc" },
-                        { label: "Descending (Z–A)", value: "desc" },
-                    ]}
-                    value={sortOrder}
-                    onChange={(val) => setSortOrder(val as "asc" | "desc")}
-                    placeholder="Select order"
-                    closeOnSelect
-                />
+            <div className="glass-panel p-6 flex-col gap-md">
+                <div className="flex-col gap-sm">
+                    <label className="label-text">Input Text</label>
+                    <textarea
+                        placeholder="Enter lines to sort..."
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        className="input-field min-h-[32vh] font-mono resize-y"
+                    />
+                </div>
 
-                <button
-                    onClick={() => setRemoveDuplicates(!removeDuplicates)}
-                    className={`ts-btn ${removeDuplicates ? "ts-btn-active" : "ts-btn-outline"}`}
-                >
-                    {removeDuplicates ? "Remove Duplicates" : "Keep Duplicates"}
-                </button>
-                {/* Sort Button */}
-                <button onClick={handleSort} className="ts-btn ts-btn-main">
-                    Sort Text
-                </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
+                    <Dropdown
+                        options={[
+                            { label: "Ascending (A–Z)", value: "asc" },
+                            { label: "Descending (Z–A)", value: "desc" },
+                        ]}
+                        value={sortOrder}
+                        onChange={(val) => setSortOrder(val as "asc" | "desc")}
+                        placeholder="Select order"
+                        closeOnSelect
+                    />
+
+                    <button
+                        onClick={() => setRemoveDuplicates(!removeDuplicates)}
+                        className={`btn-base ${removeDuplicates ? "btn-primary" : "btn-secondary"} h-[42px]`}
+                    >
+                        {removeDuplicates ? "Remove Duplicates" : "Keep Duplicates"}
+                    </button>
+
+                    <button onClick={handleSort} className="btn-base btn-primary h-[42px] w-full">
+                        Sort Text
+                    </button>
+                </div>
             </div>
 
-            {/* Output */}
             {output && (
-                <div className="ts-output-section">
-                    <div className="ts-output-header">
-                        <label className="ts-label">Output</label>
-                        <button onClick={handleCopy} className="ts-btn ts-btn-copy">
-                            Copy
+                <div className="glass-panel p-6 flex-col gap-md">
+                    <div className="flex-row justify-between items-center">
+                        <label className="label-text">Output</label>
+                        <button onClick={handleCopy} className="btn-base btn-secondary text-xs px-3 py-1">
+                            Copy Result
                         </button>
                     </div>
                     <textarea
                         value={output}
                         readOnly
-                        className="ts-textarea"
+                        className="input-field min-h-[32vh] font-mono resize-y bg-black/40"
                         placeholder="Sorted text will appear here..."
                     />
                 </div>

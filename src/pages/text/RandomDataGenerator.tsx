@@ -176,78 +176,79 @@ export function RandomDataGenerator() {
     };
 
     return (
-        <div className="rdg-container">
-            <div className="rdg-header">
-                <h2>Random Data Generator</h2>
-                <div className="rdg-actions">
+        <div className="page-container flex-col gap-lg h-fit max-w-3xl mx-auto">
+            <div className="flex-row justify-between items-center">
+                <div className="flex-col gap-sm">
+                    <h2 className="text-title text-gradient">Random Data Generator</h2>
+                    <p className="text-subtitle">Generate random names, emails, numbers, and more</p>
+                </div>
+                <button
+                    onClick={handleClear}
+                    className="btn-base btn-danger"
+                    disabled={!output.trim()}
+                >
+                    Clear
+                </button>
+            </div>
+
+            <div className="glass-panel p-6 flex-col gap-md">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div className="flex-col gap-sm">
+                        <label className="label-text">Count</label>
+                        <input
+                            type="number"
+                            min={1}
+                            max={10000}
+                            value={count}
+                            onChange={(e) => setCount(parseInt(e.target.value) || 1)}
+                            className="input-field"
+                        />
+                    </div>
+
+                    <div className="flex-col gap-sm">
+                        <label className="label-text">Data Type</label>
+                        <Dropdown
+                            options={[
+                                { label: "Random Names", value: "names" },
+                                { label: "Random Emails", value: "emails" },
+                                { label: "Random Numbers", value: "numbers" },
+                                { label: "UUIDs", value: "uuids" },
+                            ]}
+                            value={dataType}
+                            onChange={(val) => setDataType(val as typeof dataType)}
+                            placeholder="Select data type"
+                            closeOnSelect
+                        />
+                    </div>
+
                     <button
-                        onClick={handleClear}
-                        className="rdg-btn rdg-clear-btn"
-                        disabled={!output.trim()}
+                        onClick={generateData}
+                        className="btn-base btn-primary h-[42px]"
+                        disabled={isGenerating}
                     >
-                        Clear
+                        {isGenerating ? "Generating..." : "Generate Data"}
                     </button>
                 </div>
             </div>
 
-            <div className="rdg-controls">
-                <div className="rdg-control-group">
-                    <label className="rdg-label">Count:</label>
-                    <input
-                        type="number"
-                        min={1}
-                        max={10000}
-                        value={count}
-                        onChange={(e) => setCount(parseInt(e.target.value) || 1)}
-                        className="rdg-input"
-                    />
-                </div>
-
-                <div className="rdg-control-group">
-                    <label className="rdg-label">Data Type:</label>
-                    <Dropdown
-                        options={[
-                            { label: "Random Names", value: "names" },
-                            { label: "Random Emails", value: "emails" },
-                            { label: "Random Numbers", value: "numbers" },
-                            { label: "UUIDs", value: "uuids" },
-                        ]}
-                        value={dataType}
-                        onChange={(val) => setDataType(val as typeof dataType)}
-                        placeholder="Select data type"
-                        closeOnSelect
-                    />
-                </div>
-
-                <button
-                    onClick={generateData}
-                    className="rdg-btn rdg-generate-btn"
-                    disabled={isGenerating}
-                >
-                    {isGenerating ? "Generating..." : "Generate Data"}
-                </button>
-            </div>
-
             {output && (
-                <div className="rdg-section">
-                    <div className="rdg-output-header">
-                        <label className="rdg-label">
+                <div className="glass-panel p-6 flex-col gap-md">
+                    <div className="flex-row justify-between items-center">
+                        <label className="label-text">
                             Generated Data ({output.split("\n").length} items)
                         </label>
-                        <div className="rdg-output-actions">
-                            <button
-                                onClick={handleCopy}
-                                className="rdg-btn rdg-copy-btn"
-                                disabled={isCopying}
-                            >
-                                {isCopying ? "Copying..." : "Copy"}
-                            </button>
-                        </div>
+                        <button
+                            onClick={handleCopy}
+                            className="btn-base btn-secondary text-xs px-3 py-1"
+                            disabled={isCopying}
+                        >
+                            {isCopying ? "Copying..." : "Copy Result"}
+                        </button>
                     </div>
                     <textarea
                         value={output}
                         readOnly
-                        className="rdg-output"
+                        className="input-field min-h-[50vh] font-mono resize-y bg-black/40"
                         placeholder="Generated data will appear here..."
                         rows={Math.min(20, output.split("\n").length)}
                     />

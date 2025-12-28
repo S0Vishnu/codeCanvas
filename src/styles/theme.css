@@ -1,0 +1,58 @@
+:root {
+    /* Color Palette - Deep Space & Indigo */
+    --color-bg-main: #0B0F19;
+    /* Deep, rich dark blue/black */
+    --color-bg-secondary: #151B2D;
+
+    --color-primary: #6366f1;
+    /* Indigo 500 - Vibrant but professional */
+    --color-primary-hover: #4f46e5;
+    /* Indigo 600 */
+    --color-primary-light: #818cf8;
+    /* Indigo 400 */
+
+    --color-secondary: #a855f7;
+    /* Purple 500 */
+    --color-secondary-hover: #9333ea;
+
+    --color-success: #10b981;
+    --color-success-hover: #059669;
+
+    --color-error: #f43f5e;
+    /* Rose 500 - More modern red */
+    --color-error-hover: #e11d48;
+
+    --color-text-main: #f8fafc;
+    /* Slate 50 */
+    --color-text-secondary: #94a3b8;
+    /* Slate 400 */
+    --color-text-muted: #64748b;
+    /* Slate 500 */
+
+    /* Glassmorphism Variables */
+    --glass-bg: rgba(30, 41, 59, 0.3);
+    /* Lighter, more transparent */
+    --glass-bg-dark: rgba(15, 23, 42, 0.6);
+    --glass-bg-scan: rgba(2, 6, 23, 0.7);
+    /* Deep scanline bg */
+    --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+    --glass-backdrop: blur(12px) saturate(180%);
+    /* Pro-level frosted glass */
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+
+    /* Spacing & Layout */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 40px;
+
+    /* Typography */
+    --font-family: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}

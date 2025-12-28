@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "../../styles/editor.css";
+
 import { useEditorStore } from "../../store/editorStore";
 import EditorPanel from "../../modules/editor/EditorPanel";
 import PreviewPanel from "../../modules/editor/PreviewPanel";
@@ -28,15 +28,15 @@ const LiveEditor = () => {
     }, [clearLogs]);
 
     return (
-        <div className="live-editor-root">
-            <div className="editor-left">
+        <div className="flex h-screen w-screen bg-black overflow-hidden font-sans">
+            <div className="w-[40vw] min-w-[350px] flex flex-col border-r border-white/10 bg-black/40 backdrop-blur-md">
                 <EditorPanel />
             </div>
-            <div className="editor-right">
-                <div className="preview-top">
+            <div className="flex-1 flex flex-col h-full relative">
+                <div className="flex-[2] border-b border-white/10 relative bg-white/5">
                     <PreviewPanel />
                 </div>
-                <div className="console-bottom">
+                <div className="flex-1 bg-black/80 overflow-hidden flex flex-col">
                     <ConsolePanel />
                 </div>
             </div>

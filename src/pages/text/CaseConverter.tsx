@@ -184,13 +184,16 @@ export function CaseConverter() {
     };
 
     return (
-        <div className="case-converter">
-            <div className="case-header">
-                <h2>Text Case Converter</h2>
+        <div className="page-container flex-col gap-lg">
+            <div className="flex-row justify-between items-center">
+                <div className="flex-col gap-sm">
+                    <h2 className="text-title text-gradient">Text Case Converter</h2>
+                    <p className="text-subtitle">Convert text between different naming conventions</p>
+                </div>
                 <div className="case-actions">
                     <button
                         onClick={clearAll}
-                        className="case-action-btn clear-btn"
+                        className="btn-base btn-danger"
                         disabled={!input && !output}
                     >
                         Clear All
@@ -198,10 +201,10 @@ export function CaseConverter() {
                 </div>
             </div>
 
-            <div className="case-section">
-                <div className="case-input-header">
-                    <label className="case-label">Input Text</label>
-                    <button onClick={copyInput} className="case-copy-btn" disabled={!input.trim()}>
+            <div className="glass-panel p-6 flex-col gap-md">
+                <div className="flex-row justify-between items-center">
+                    <label className="label-text">Input Text</label>
+                    <button onClick={copyInput} className="btn-base btn-secondary text-xs px-3 py-1" disabled={!input.trim()}>
                         📋 Copy Input
                     </button>
                 </div>
@@ -209,10 +212,10 @@ export function CaseConverter() {
                     placeholder="Enter your text here to convert between different cases..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    className="case-textarea"
+                    className="input-field min-h-[150px] font-mono resize-y"
                     rows={5}
                 />
-                <div className="case-input-info">
+                <div className="flex-row justify-end text-xs text-secondary">
                     <span>
                         Characters: {input.length} | Words:{" "}
                         {input.trim() ? input.trim().split(/\s+/).length : 0}
@@ -220,14 +223,14 @@ export function CaseConverter() {
                 </div>
             </div>
 
-            <div className="case-buttons-section">
-                <h3>Convert To:</h3>
-                <div className="case-buttons">
+            <div className="flex-col gap-md">
+                <h3 className="text-xl font-bold">Convert To:</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {caseTypes.map((type) => (
                         <button
                             key={type.id}
                             onClick={() => handleConvert(type.fn)}
-                            className="case-btn"
+                            className="btn-base bg-slate-800 hover:bg-slate-700 border border-white/10"
                             disabled={!input.trim()}
                         >
                             {type.label}
@@ -237,19 +240,19 @@ export function CaseConverter() {
             </div>
 
             {output && (
-                <div className="case-section">
-                    <div className="case-output-header">
-                        <label className="case-label">Converted Output</label>
+                <div className="glass-panel p-6 flex-col gap-md">
+                    <div className="flex-row justify-between items-center">
+                        <label className="label-text">Converted Output</label>
                         <button
                             onClick={handleCopy}
-                            className="case-copy-btn"
+                            className="btn-base btn-primary text-xs px-3 py-1"
                             disabled={isCopying || !output.trim()}
                         >
                             {isCopying ? "Copying..." : "📋 Copy Output"}
                         </button>
                     </div>
-                    <textarea value={output} readOnly className="case-output" rows={5} />
-                    <div className="case-output-info">
+                    <textarea value={output} readOnly className="input-field min-h-[150px] font-mono resize-y bg-black/40" rows={5} />
+                    <div className="flex-row justify-end text-xs text-secondary">
                         <span>
                             Characters: {output.length} | Words:{" "}
                             {output.trim() ? output.trim().split(/\s+/).length : 0}
