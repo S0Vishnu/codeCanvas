@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import "./App.css";
 
 // 🏠 Core Pages
 import Pages from "./Pages";

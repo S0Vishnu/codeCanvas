@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Dropdown from "../../components/Dropdown";
-import "../../styles/texts/TextSorter.css";
 import { useToast } from "../../providers/ToastContext";
+import { Textarea, InputLabel } from "../../components/inputs";
 
 export function TextSorter() {
     const { addToast } = useToast();
@@ -106,12 +106,12 @@ export function TextSorter() {
 
             <div className="glass-panel p-6 flex-col gap-md">
                 <div className="flex-col gap-sm">
-                    <label className="label-text">Input Text</label>
-                    <textarea
+                    <InputLabel>Input Text</InputLabel>
+                    <Textarea
                         placeholder="Enter lines to sort..."
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        className="input-field min-h-[32vh] font-mono resize-y"
+                        className="min-h-[32vh] font-mono resize-y"
                     />
                 </div>
 
@@ -143,15 +143,15 @@ export function TextSorter() {
             {output && (
                 <div className="glass-panel p-6 flex-col gap-md">
                     <div className="flex-row justify-between items-center">
-                        <label className="label-text">Output</label>
+                        <InputLabel>Output</InputLabel>
                         <button onClick={handleCopy} className="btn-base btn-secondary text-xs px-3 py-1">
                             Copy Result
                         </button>
                     </div>
-                    <textarea
+                    <Textarea
                         value={output}
                         readOnly
-                        className="input-field min-h-[32vh] font-mono resize-y bg-black/40"
+                        className="min-h-[32vh] font-mono resize-y bg-black/40"
                         placeholder="Sorted text will appear here..."
                     />
                 </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { storage } from "../../utils/storage";
-import "../../styles/texts/DuplicateRemover.css";
 import { useToast } from "../../providers/ToastContext";
+import { Textarea, InputLabel } from "../../components/inputs";
 
 export function DuplicateRemover() {
     const { addToast } = useToast();
@@ -80,12 +80,12 @@ export function DuplicateRemover() {
             </div>
 
             <div className="glass-panel p-6 flex-col gap-md">
-                <label className="label-text">Input Text</label>
-                <textarea
+                <InputLabel>Input Text</InputLabel>
+                <Textarea
                     placeholder="Enter text with duplicate lines..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    className="input-field min-h-[200px] font-mono resize-y"
+                    className="min-h-[200px] font-mono resize-y"
                 />
 
                 <button onClick={handleRemoveDuplicates} className="btn-base btn-primary w-full">
@@ -96,12 +96,12 @@ export function DuplicateRemover() {
             {output && (
                 <div className="glass-panel p-6 flex-col gap-md">
                     <div className="flex-row justify-between items-center">
-                        <label className="label-text">Result</label>
+                        <InputLabel>Result</InputLabel>
                         <button onClick={handleCopy} className="btn-base btn-secondary text-xs px-3 py-1">
                             Copy Result
                         </button>
                     </div>
-                    <textarea value={output} readOnly className="input-field min-h-[50vh] font-mono resize-y bg-black/40" />
+                    <Textarea value={output} readOnly className="min-h-50vh font-mono resize-y bg-black/40" />
                 </div>
             )}
         </div>

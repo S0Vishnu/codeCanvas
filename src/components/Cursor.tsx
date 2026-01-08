@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import "../styles/Cursor.css";
+import "../styles/Cursor.css"
 
 const Cursor = () => {
   const cursorRef = useRef<HTMLDivElement>(null);

@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import type { DropdownOption } from "../../components/Dropdown";
 import Dropdown from "../../components/Dropdown";
 import { FiDownload, FiTrash2, FiCopy, FiEye } from "react-icons/fi";
-import "../../styles/BatchImageConverter.css";
+import { FileInput, Textarea, InputLabel } from "../../components/inputs";
 
 // extended output options
 type SupportedFormat =
@@ -297,9 +297,8 @@ const BatchFileConverter: React.FC = () => {
                 </div>
 
                 <div className="upload-zone w-full">
-                    <input
+                    <FileInput
                         id="file-upload"
-                        type="file"
                         accept="*/*"
                         multiple
                         onChange={handleFileChange}
@@ -484,12 +483,12 @@ const BatchFileConverter: React.FC = () => {
                                 />
                             )}
                             {previewFile.text && (
-                                <textarea
+                                <Textarea
                                     value={previewFile.text}
                                     readOnly
                                     rows={12}
-                                    className="w-full min-w-[50vw] min-h-[50vh] bg-transparent border-none text-mono text-sm resize-none focus:outline-none"
-                                ></textarea>
+                                    className="w-full min-w-[50vw] min-h-50vh bg-transparent border-none text-mono text-sm resize-none focus:outline-none"
+                                />
                             )}
                         </div>
                     </div>

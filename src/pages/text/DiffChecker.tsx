@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { storage } from "../../utils/storage";
-import "../../styles/texts/DiffChecker.css";
+import { Textarea, InputLabel } from "../../components/inputs";
 
 export function DiffChecker() {
     const [text1, setText1] = useState(() => storage.get("diff-checker-text1", ""));
@@ -34,27 +34,27 @@ export function DiffChecker() {
 
             <div className="grid-2">
                 <div className="glass-panel p-6 flex-col gap-md">
-                    <label className="label-text">Original Text</label>
-                    <textarea
+                    <InputLabel>Original Text</InputLabel>
+                    <Textarea
                         placeholder="Enter original text..."
                         value={text1}
                         onChange={(e) => setText1(e.target.value)}
-                        className="input-field min-h-[300px] font-mono resize-y"
+                        className="min-h-[300px] font-mono resize-y"
                     />
                 </div>
                 <div className="glass-panel p-6 flex-col gap-md">
-                    <label className="label-text">Modified Text</label>
-                    <textarea
+                    <InputLabel>Modified Text</InputLabel>
+                    <Textarea
                         placeholder="Enter modified text..."
                         value={text2}
                         onChange={(e) => setText2(e.target.value)}
-                        className="input-field min-h-[300px] font-mono resize-y"
+                        className="min-h-[300px] font-mono resize-y"
                     />
                 </div>
             </div>
 
             <div className="glass-panel p-6 flex-col gap-md">
-                <label className="label-text">Comparison Result</label>
+                <InputLabel>Comparison Result</InputLabel>
                 <div className="flex-col gap-1 max-h-[400px] overflow-y-auto pr-2 rounded-lg bg-black/40 p-4 font-mono text-sm">
                     {Array.from({ length: maxLines }).map((_, i) => {
                         const diffType = getDiffClass(lines1[i] || "", lines2[i] || "");

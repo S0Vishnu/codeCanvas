@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
-import "../../styles/games/PencilRunGame.css";
 import { NoToneMapping, SRGBColorSpace, Vector3 } from "three";
 import GameScene from "./SceneGame";
 import PostProcessing from "./effects/PostProcessing";
@@ -10,6 +9,7 @@ import { InputProvider } from "./hooks/inputContext";
 import { MusicProvider } from "./hooks/MusicContext";
 import { SettingsUI } from "./ui/Settings";
 import { StartGameScreen } from "./ui/StartGameScreen"; // <-- import
+import "../../styles/PencilRunGame.css";
 
 export type Obstacle = {
     id: number;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { storage } from "../../utils/storage";
-import "../../styles/texts/FindReplace.css";
 import { useToast } from "../../providers/ToastContext";
+import { Textarea, TextInput, Checkbox, InputLabel } from "../../components/inputs";
 
 export function FindReplace() {
     const [input, setInput] = useState(() => storage.get("find-replace-input", ""));
@@ -119,58 +119,48 @@ export function FindReplace() {
             </div>
 
             <div className="glass-panel p-6 flex-col gap-md">
-                <label className="label-text">Input Text</label>
-                <textarea
+                <InputLabel>Input Text</InputLabel>
+                <Textarea
                     placeholder="Enter text to search and replace..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    className="input-field min-h-[150px] font-mono resize-y"
+                    className="min-h-[150px] font-mono resize-y"
                 />
             </div>
 
             <div className="glass-panel p-6 flex-col gap-md">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex-col gap-sm">
-                        <label className="label-text">Find</label>
-                        <input
+                        <InputLabel>Find</InputLabel>
+                        <TextInput
                             type="text"
                             placeholder="Text to find"
                             value={findText}
                             onChange={(e) => setFindText(e.target.value)}
-                            className="input-field"
                         />
                     </div>
                     <div className="flex-col gap-sm">
-                        <label className="label-text">Replace</label>
-                        <input
+                        <InputLabel>Replace</InputLabel>
+                        <TextInput
                             type="text"
                             placeholder="Replace with"
                             value={replaceText}
                             onChange={(e) => setReplaceText(e.target.value)}
-                            className="input-field"
                         />
                     </div>
                 </div>
 
                 <div className="flex-row gap-lg">
-                    <label className="flex-row gap-sm items-center cursor-pointer text-secondary hover:text-white transition-colors">
-                        <input
-                            type="checkbox"
-                            checked={caseSensitive}
-                            onChange={(e) => setCaseSensitive(e.target.checked)}
-                            className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
-                        />
-                        Case sensitive
-                    </label>
-                    <label className="flex-row gap-sm items-center cursor-pointer text-secondary hover:text-white transition-colors">
-                        <input
-                            type="checkbox"
-                            checked={useRegex}
-                            onChange={(e) => setUseRegex(e.target.checked)}
-                            className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
-                        />
-                        Use regex
-                    </label>
+                    <Checkbox
+                        checked={caseSensitive}
+                        onChange={(e) => setCaseSensitive(e.target.checked)}
+                        label="Case sensitive"
+                    />
+                    <Checkbox
+                        checked={useRegex}
+                        onChange={(e) => setUseRegex(e.target.checked)}
+                        label="Use regex"
+                    />
                 </div>
 
                 <button onClick={handleReplace} disabled={!findText} className="btn-base btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed">
@@ -181,12 +171,12 @@ export function FindReplace() {
             {output && (
                 <div className="glass-panel p-6 flex-col gap-md">
                     <div className="flex-row justify-between items-center">
-                        <label className="label-text">Output</label>
+                        <InputLabel>Output</InputLabel>
                         <button onClick={handleCopy} className="btn-base btn-secondary text-xs px-3 py-1">
                             Copy Result
                         </button>
                     </div>
-                    <textarea value={output} readOnly className="input-field min-h-[150px] font-mono resize-y bg-black/40" />
+                    <Textarea value={output} readOnly className="min-h-[150px] font-mono resize-y bg-black/40" />
                 </div>
             )}
         </div>

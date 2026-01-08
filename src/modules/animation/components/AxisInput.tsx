@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import type { Asset } from "../store/useAssetStore";
 import img from "../../../assets/icons/arrow.svg";
+import { TextInput } from "../../../components/inputs";
 
 type TransformField = "position" | "rotation" | "scale";
 
@@ -52,11 +53,11 @@ const AxisInput = ({
 
   return (
     <div className="input-with-dragger-container">
-      <input
+      <TextInput
         ref={inputRef}
         type="number"
         step={0.1}
-        value={asset.transform[property][axis]}
+        value={asset.transform[property][axis].toString()}
         onChange={(e) => {
           handleInputChange(
             asset.id,

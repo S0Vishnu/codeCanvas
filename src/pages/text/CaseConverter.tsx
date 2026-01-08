@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { storage } from "../../utils/storage";
-import "../../styles/texts/CaseConverter.css";
 import { useToast } from "../../providers/ToastContext";
+import { Textarea, InputLabel } from "../../components/inputs";
 
 const caseTypes = [
     { id: "lower", label: "lowercase", fn: (s: string) => s.toLowerCase() },
@@ -203,16 +203,16 @@ export function CaseConverter() {
 
             <div className="glass-panel p-6 flex-col gap-md">
                 <div className="flex-row justify-between items-center">
-                    <label className="label-text">Input Text</label>
+                    <InputLabel>Input Text</InputLabel>
                     <button onClick={copyInput} className="btn-base btn-secondary text-xs px-3 py-1" disabled={!input.trim()}>
                         📋 Copy Input
                     </button>
                 </div>
-                <textarea
+                <Textarea
                     placeholder="Enter your text here to convert between different cases..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    className="input-field min-h-[150px] font-mono resize-y"
+                    className="min-h-[150px] font-mono resize-y"
                     rows={5}
                 />
                 <div className="flex-row justify-end text-xs text-secondary">
@@ -242,7 +242,7 @@ export function CaseConverter() {
             {output && (
                 <div className="glass-panel p-6 flex-col gap-md">
                     <div className="flex-row justify-between items-center">
-                        <label className="label-text">Converted Output</label>
+                        <InputLabel>Converted Output</InputLabel>
                         <button
                             onClick={handleCopy}
                             className="btn-base btn-primary text-xs px-3 py-1"
@@ -251,7 +251,7 @@ export function CaseConverter() {
                             {isCopying ? "Copying..." : "📋 Copy Output"}
                         </button>
                     </div>
-                    <textarea value={output} readOnly className="input-field min-h-[150px] font-mono resize-y bg-black/40" rows={5} />
+                    <Textarea value={output} readOnly className="min-h-[150px] font-mono resize-y bg-black/40" rows={5} />
                     <div className="flex-row justify-end text-xs text-secondary">
                         <span>
                             Characters: {output.length} | Words:{" "}

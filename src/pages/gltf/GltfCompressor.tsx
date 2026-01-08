@@ -5,7 +5,7 @@ import * as THREE from "three";
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import ReactComponentGenerator from "../../modules/gltf/ReactComponentGenerator";
 import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
-import "../../styles/GltfCompressor.css";
+import { FileInput } from "../../components/inputs";
 
 type UploadedModelProps = { url: string };
 const UploadedModel = ({ url }: UploadedModelProps) => {
@@ -298,9 +298,8 @@ export default function GLTFCompressorPage() {
                         </p>
                         <p className="text-secondary">Supported formats: .glb, .gltf</p>
                     </div>
-                    <input
+                    <FileInput
                         ref={fileInputRef}
-                        type="file"
                         accept=".glb,.gltf"
                         style={{ display: "none" }}
                         onChange={(e) => e.target.files && handleFile(e.target.files[0])}

@@ -1,12 +1,11 @@
 import Properties from "../../modules/animation/Properties";
 import Scene from "../../modules/animation/Scene";
-import "../../styles/AnimationEditor.css";
 
 const AnimationEditor = () => {
     return (
         <div className="animation-editor">
-            <div className="container-2">
-                <div className="container-1">
+            <div className="animation-layout">
+                <div className="animation-scene-container">
                     <Scene />
                     {/* <KeyframeEditor /> */}
                 </div>

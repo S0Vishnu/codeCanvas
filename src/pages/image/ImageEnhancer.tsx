@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState, type ChangeEvent } from "react";
 import Controls from "../../modules/imageEnhancer/Controls";
-import "../../styles/ImageEnhancer.css";
+import { FileInput } from "../../components/inputs";
 
 export type ImageEnhancerProps = {
     src?: string;
@@ -401,8 +401,7 @@ export const ImageEnhancer: React.FC<ImageEnhancerProps> = ({
                             <span className="text-lg font-semibold text-white mb-2">Click or Drag & Drop an image</span>
                             <span className="text-sm text-secondary">Supports JPG, PNG, WebP</span>
                         </div>
-                        <input
-                            type="file"
+                        <FileInput
                             accept="image/*"
                             onChange={handleUpload}
                             className="hidden"

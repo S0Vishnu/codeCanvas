@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../../styles/StringToArrayParser.css";
+import { Textarea, InputLabel } from "../../components/inputs";
 
 type Link = {
     index: number;
@@ -112,9 +112,9 @@ export const StringToArrayParser = () => {
             </div>
 
             <div className="glass-panel p-6 flex-col gap-md">
-                <label className="label-text">Input Object String</label>
-                <textarea
-                    className="input-field min-h-[30vh] font-mono text-success bg-black/40"
+                <InputLabel>Input Object String</InputLabel>
+                <Textarea
+                    className="min-h-[30vh] font-mono text-success bg-black/40"
                     value={inputString}
                     onChange={(e) => setInputString(e.target.value)}
                     placeholder="Paste your object string here..."
@@ -141,7 +141,7 @@ export const StringToArrayParser = () => {
 
             {result.length > 0 && (
                 <div className="glass-panel p-6 flex-col gap-md">
-                    <label className="label-text">Parsed Result (JSON)</label>
+                    <InputLabel>Parsed Result (JSON)</InputLabel>
                     <pre className="input-field min-h-[30vh] max-h-[50vh] overflow-y-auto font-mono text-xs bg-black/60">
                         {JSON.stringify(result, null, 2)}
                     </pre>

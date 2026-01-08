@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import imageCompression from "browser-image-compression";
 import JSZip from "jszip";
-import "../../styles/ImageCompressor.css";
+import { FileInput, RangeSlider, Checkbox, Select, InputLabel } from "../../components/inputs";
 
 type ImageItem = {
     id: string;
@@ -591,9 +591,8 @@ const ImageCompressor: React.FC = () => {
                         >
                             Choose Files
                         </button>
-                        <input
+                        <FileInput
                             ref={fileInputRef}
-                            type="file"
                             accept="image/*"
                             multiple
                             onChange={handleFileInput}
@@ -627,76 +626,63 @@ const ImageCompressor: React.FC = () => {
                         <div className="grid-2 mb-8">
                             <div className="flex-col gap-lg">
                                 <div className="flex-col gap-sm">
-                                    <label className="label-text flex-row justify-between">
+                                    <InputLabel className="flex-row justify-between">
                                         Quality
                                         <span className="text-primary">{Math.round(globalQuality * 100)}%</span>
-                                    </label>
-                                    <input
+                                    </InputLabel>
+                                    <RangeSlider
                                         type="range"
-                                        min="0.1"
-                                        max="1"
-                                        step="0.05"
-                                        className="w-full"
+                                        min={0.1}
+                                        max={1}
+                                        step={0.05}
                                         value={globalQuality}
                                         onChange={(e) =>
                                             handleQualityChange(parseFloat(e.target.value))
                                         }
+                                        showValue={false}
                                     />
                                 </div>
 
                                 <div className="flex-col gap-sm">
-                                    <label className="label-text flex-row justify-between">
+                                    <InputLabel className="flex-row justify-between">
                                         Max Dimension
                                         <span className="text-primary">{globalMaxDimension}px</span>
-                                    </label>
-                                    <input
+                                    </InputLabel>
+                                    <RangeSlider
                                         type="range"
-                                        min="100"
-                                        max="4000"
-                                        step="100"
-                                        className="w-full"
+                                        min={100}
+                                        max={4000}
+                                        step={100}
                                         value={globalMaxDimension}
                                         onChange={(e) =>
                                             handleMaxDimensionChange(parseInt(e.target.value))
                                         }
+                                        showValue={false}
                                     />
                                 </div>
 
-                                <div className="flex-row gap-sm">
-                                    <input
-                                        type="checkbox"
-                                        checked={useDimensionPreset}
-                                        onChange={(e) =>
-                                            handleUsePresetToggle(e.target.checked)
-                                        }
-                                        id="useDimensionPreset"
-                                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                    />
-                                    <label htmlFor="useDimensionPreset" className="label-text mb-0 cursor-pointer">
-                                        Use Dimension Preset
-                                    </label>
-                                </div>
+                                <Checkbox
+                                    checked={useDimensionPreset}
+                                    onChange={(e) =>
+                                        handleUsePresetToggle(e.target.checked)
+                                    }
+                                    id="useDimensionPreset"
+                                    label="Use Dimension Preset"
+                                />
 
                                 {useDimensionPreset && (
                                     <div className="flex-col gap-sm">
-                                        <label className="label-text">
+                                        <InputLabel>
                                             Dimension Preset
-                                        </label>
-                                        <select
+                                        </InputLabel>
+                                        <Select
                                             value={selectedPreset}
                                             onChange={(e) => handlePresetChange(e.target.value)}
-                                            className="input-field"
-                                        >
-                                            {dimensionPresets.map((preset) => (
-                                                <option key={preset.label} value={preset.label}>
-                                                    {preset.label}{" "}
-                                                    {preset.type === "preset" &&
-                                                        preset.width > 0
-                                                        ? `(${preset.width}×${preset.height})`
-                                                        : ""}
-                                                </option>
-                                            ))}
-                                        </select>
+                                            options={dimensionPresets.map((preset) => ({
+                                                value: preset.label,
+                                                label: `${preset.label}${preset.type === "preset" && preset.width > 0 ? ` (${preset.width}×${preset.height})` : ""}`
+                                            }))}
+                                        />
                                         <div className="text-xs text-secondary mt-1">
                                             {getCurrentDimensionInfo()}
                                         </div>
@@ -704,26 +690,22 @@ const ImageCompressor: React.FC = () => {
                                 )}
 
                                 <div className="flex-col gap-sm">
-                                    <label className="label-text">
+                                    <InputLabel>
                                         Download Format
-                                    </label>
-                                    <select
+                                    </InputLabel>
+                                    <Select
                                         value={downloadFormat}
                                         onChange={(e) =>
                                             setDownloadFormat(
                                                 e.target.value as "jpeg" | "png" | "webp"
                                             )
                                         }
-                                        className="input-field"
-                                    >
-                                        <option value="jpeg">JPEG</option>
-                                        <option value="png">
-                                            PNG (Preserves Transparency)
-                                        </option>
-                                        <option value="webp">
-                                            WebP (Preserves Transparency)
-                                        </option>
-                                    </select>
+                                        options={[
+                                            { value: "jpeg", label: "JPEG" },
+                                            { value: "png", label: "PNG (Preserves Transparency)" },
+                                            { value: "webp", label: "WebP (Preserves Transparency)" }
+                                        ]}
+                                    />
                                 </div>
                             </div>
 
@@ -794,9 +776,8 @@ const ImageCompressor: React.FC = () => {
                             >
                                 Add More Images
                             </button>
-                            <input
+                            <FileInput
                                 ref={fileInputRef}
-                                type="file"
                                 accept="image/*"
                                 multiple
                                 onChange={handleFileInput}
@@ -817,7 +798,7 @@ const ImageCompressor: React.FC = () => {
                         <div className="grid-images">
                             {images.map((img) => (
                                 <div key={img.id} className="image-card glass-card">
-                                    <div className="flex-row justify-between mb-4">
+                                    <div className="image-card-header flex-row justify-between mb-4">
                                         <h4 className="text-sm font-semibold truncate max-w-[150px]" title={img.file.name}>{img.file.name}</h4>
                                         <button
                                             className="btn-remove bg-red-600 hover:bg-red-700 text-white rounded-full p-1"
@@ -842,7 +823,7 @@ const ImageCompressor: React.FC = () => {
                                         </button>
                                     </div>
 
-                                    <div className="relative mb-4 rounded-lg overflow-hidden bg-black/40 aspect-video group">
+                                    <div className="image-card-preview relative mb-4 rounded-lg overflow-hidden bg-black/40 group">
                                         <img
                                             src={
                                                 previewOriginalId === img.id
@@ -870,7 +851,7 @@ const ImageCompressor: React.FC = () => {
                                         )}
                                     </div>
 
-                                    <div className="text-sm flex-col gap-xs">
+                                    <div className="image-card-metadata text-sm flex-col gap-xs">
                                         <div className="flex-row justify-between">
                                             <span className="text-secondary">Original:</span>
                                             <span>{formatFileSize(img.originalSize)}</span>
@@ -882,33 +863,30 @@ const ImageCompressor: React.FC = () => {
                                                 {img.originalDimensions.height}
                                             </span>
                                         </div>
-                                        {img.compressedFile && img.compressedDimensions && (
-                                            <>
-                                                <div className="flex-row justify-between">
-                                                    <span className="text-secondary">Compressed:</span>
-                                                    <span>
-                                                        {formatFileSize(img.compressedSize!)}
-                                                    </span>
-                                                </div>
-                                                <div className="flex-row justify-between">
-                                                    <span className="text-secondary">New Resolution:</span>
-                                                    <span>
-                                                        {img.compressedDimensions.width} ×{" "}
-                                                        {img.compressedDimensions.height}
-                                                    </span>
-                                                </div>
-                                                <div className="flex-row justify-between">
-                                                    <span className="text-secondary">Saved:</span>
-                                                    <span className="text-success font-bold">
-                                                        {getCompressionRatio(
-                                                            img.originalSize,
-                                                            img.compressedSize!
-                                                        )}
-                                                        %
-                                                    </span>
-                                                </div>
-                                            </>
-                                        )}
+                                        <div className="flex-row justify-between">
+                                            <span className="text-secondary">Compressed:</span>
+                                            <span>
+                                                {img.compressedFile && img.compressedSize
+                                                    ? formatFileSize(img.compressedSize)
+                                                    : "—"}
+                                            </span>
+                                        </div>
+                                        <div className="flex-row justify-between">
+                                            <span className="text-secondary">New Resolution:</span>
+                                            <span>
+                                                {img.compressedFile && img.compressedDimensions
+                                                    ? `${img.compressedDimensions.width} × ${img.compressedDimensions.height}`
+                                                    : "—"}
+                                            </span>
+                                        </div>
+                                        <div className="flex-row justify-between">
+                                            <span className="text-secondary">Saved:</span>
+                                            <span className={img.compressedFile && img.compressedSize ? "text-success font-bold" : ""}>
+                                                {img.compressedFile && img.compressedSize
+                                                    ? `${getCompressionRatio(img.originalSize, img.compressedSize)}%`
+                                                    : "—"}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     {img.error && <div className="text-error text-sm mt-2 text-center">{img.error}</div>}

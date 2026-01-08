@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Chess, Move } from "chess.js";
 import { Chessboard, type PieceDropHandlerArgs } from "react-chessboard";
 import Confetti from "react-confetti"; // npm i react-confetti
-import "../styles/games/ChessGame.css";
+import "../styles/ChessGame.css";
 
 type GameMode = "NONE" | "TWO_PLAYER" | "VS_COMPUTER";
 

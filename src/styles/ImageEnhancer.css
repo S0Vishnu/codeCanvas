@@ -1,6 +1,0 @@
-/* Image Enhancer Custom Styles */
-
-/* We mostly use shared styles now, but can keep specific layout tweaks here */
-.canvas-wrapper.panning {
-    cursor: grabbing;
-}

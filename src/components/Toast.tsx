@@ -1,7 +1,6 @@
 import React from "react";
 import { type Toast as ToastType } from "../types/toast"; // Fixed import
 import { useToast } from "../providers/ToastContext";
-import "../styles/main/toast.css";
 
 interface ToastProps {
     toast: ToastType;
@@ -25,13 +24,13 @@ export const Toast: React.FC<ToastProps> = ({ toast, onClose }) => {
     };
 
     return (
-        <div className={`toast toast--${toast.type}`}>
-            <div className="toast__content">
-                <span className="toast__icon">{getIcon()}</span>
-                <span className="toast__message">{toast.message}</span>
+        <div className={`toast toast-${toast.type}`}>
+            <div className="toast-content">
+                <span className="toast-icon">{getIcon()}</span>
+                <span className="toast-message">{toast.message}</span>
             </div>
             <button
-                className="toast__close"
+                className="toast-close btn-base"
                 onClick={() => onClose(toast.id)}
                 aria-label="Close notification"
             >
@@ -47,7 +46,7 @@ export const ToastContainer: React.FC = () => {
     if (toasts.length === 0) return null;
 
     return (
-        <div className="toast-container" aria-live="polite" aria-atomic="true">
+        <div className="toast-container flex-col gap-sm" aria-live="polite" aria-atomic="true">
             {toasts.map((toast) => (
                 <Toast key={toast.id} toast={toast} onClose={removeToast} />
             ))}

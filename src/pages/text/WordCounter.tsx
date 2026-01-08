@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../../styles/texts/WordCounter.css";
+import { Textarea } from "../../components/inputs";
 
 export function WordCounter() {
     const [text, setText] = useState(() => localStorage.getItem("word-counter-text") || "");
@@ -25,11 +25,11 @@ export function WordCounter() {
             </div>
 
             <div className="glass-panel p-6 flex-col gap-md">
-                <textarea
+                <Textarea
                     placeholder="Type or paste your text here..."
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-                    className="input-field min-h-[50vh] font-mono resize-y"
+                    className="min-h-50vh font-mono resize-y"
                 />
             </div>
 

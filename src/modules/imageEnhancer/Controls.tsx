@@ -1,4 +1,5 @@
 import Dropdown from "../../components/Dropdown";
+import { RangeSlider, InputLabel } from "../../components/inputs";
 
 type ControlsProps = {
     state: EditState;
@@ -53,55 +54,59 @@ const Controls: React.FC<ControlsProps> = ({
             </div>
 
             <div className="flex-col gap-sm">
-                <label className="label-text flex-row justify-between">
+                <InputLabel className="flex-row justify-between">
                     Brightness <span className="text-primary">{state.brightness}</span>
-                </label>
-                <input
+                </InputLabel>
+                <RangeSlider
                     type="range"
                     min={-100}
                     max={100}
                     value={state.brightness}
                     onChange={(e) => onSliderChange("brightness", Number(e.target.value))}
+                    showValue={false}
                 />
             </div>
 
             <div className="flex-col gap-sm">
-                <label className="label-text flex-row justify-between">
+                <InputLabel className="flex-row justify-between">
                     Contrast <span className="text-primary">{state.contrast}</span>
-                </label>
-                <input
+                </InputLabel>
+                <RangeSlider
                     type="range"
                     min={-100}
                     max={100}
                     value={state.contrast}
                     onChange={(e) => onSliderChange("contrast", Number(e.target.value))}
+                    showValue={false}
                 />
             </div>
 
             <div className="flex-col gap-sm">
-                <label className="label-text flex-row justify-between">
+                <InputLabel className="flex-row justify-between">
                     Saturation <span className="text-primary">{state.saturation}</span>
-                </label>
-                <input
+                </InputLabel>
+                <RangeSlider
                     type="range"
                     min={-100}
                     max={100}
                     value={state.saturation}
                     onChange={(e) => onSliderChange("saturation", Number(e.target.value))}
+                    showValue={false}
                 />
             </div>
 
             <div className="flex-col gap-sm">
-                <label className="label-text flex-row justify-between">
+                <InputLabel className="flex-row justify-between">
                     Zoom <span className="text-primary">{state.zoom.toFixed(2)}x</span>
-                </label>
-                <input
+                </InputLabel>
+                <RangeSlider
                     type="range"
                     min={0.1}
                     max={3}
                     step={0.01}
                     value={state.zoom}
                     onChange={(e) => onZoom(Number(e.target.value))}
+                    showValue={false}
                 />
             </div>
 

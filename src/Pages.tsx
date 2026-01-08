@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Cursor from "./components/Cursor";
-import "./styles/main/Page.css";
 import { links, type LinkItem } from "./data/pageLinks";
 import { storage } from "./utils/storage";
 
@@ -42,26 +41,27 @@ const Pages = () => {
             : filteredLinks.filter((l) => l.subcategory === activeSubcategory);
 
     return (
-        <div className="dashboard-container">
+        <div className="page-container">
             <Cursor />
 
-            <h1 className="dashboard-title">
+            <h1 className="page-header">
                 Tools Dashboard
                 <input
                     type="text"
                     placeholder="Search pages..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="dashboard-search"
+                    className="input-field"
+                    style={{ minWidth: "250px", maxWidth: "100%" }}
                 />
             </h1>
 
             {/* Category Toggle */}
-            <div className="category-toggle">
+            <div className="flex-row gap-sm mb-lg flex-wrap">
                 {(["Tools", "Games", "Projects"] as const).map((cat) => (
                     <button
                         key={cat}
-                        className={`category-btn ${activeCategory === cat ? "active" : ""}`}
+                        className={`btn-base ${activeCategory === cat ? "btn-primary" : "btn-secondary"}`}
                         onClick={() => {
                             setActiveCategory(cat);
                             setActiveSubcategory("All Tools");
@@ -114,7 +114,6 @@ const Pages = () => {
                                             : navigate(link.path)
                                     }
                                 >
-                                    {link.beta && <span className="beta-tag">Beta</span>}
                                     <img
                                         src={link.thumbnail || "/thumbnails/no-image.webp"}
                                         alt={link.name}
@@ -142,7 +141,6 @@ const Pages = () => {
                                     : navigate(link.path)
                             }
                         >
-                            {link.beta && <span className="beta-tag">Beta</span>}
                             <img
                                 src={link.thumbnail || "/thumbnails/no-image.webp"}
                                 alt={link.name}

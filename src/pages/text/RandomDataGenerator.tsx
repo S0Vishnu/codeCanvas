@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Dropdown from "../../components/Dropdown";
 import { useToast } from "../../providers/ToastContext";
-import "../../styles/texts/RandomDataGenerator.css";
+import { TextInput, Textarea, InputLabel } from "../../components/inputs";
 
 const firstNames = [
     "James",
@@ -194,19 +194,18 @@ export function RandomDataGenerator() {
             <div className="glass-panel p-6 flex-col gap-md">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div className="flex-col gap-sm">
-                        <label className="label-text">Count</label>
-                        <input
+                        <InputLabel>Count</InputLabel>
+                        <TextInput
                             type="number"
                             min={1}
                             max={10000}
-                            value={count}
+                            value={count.toString()}
                             onChange={(e) => setCount(parseInt(e.target.value) || 1)}
-                            className="input-field"
                         />
                     </div>
 
                     <div className="flex-col gap-sm">
-                        <label className="label-text">Data Type</label>
+                        <InputLabel>Data Type</InputLabel>
                         <Dropdown
                             options={[
                                 { label: "Random Names", value: "names" },
@@ -234,9 +233,9 @@ export function RandomDataGenerator() {
             {output && (
                 <div className="glass-panel p-6 flex-col gap-md">
                     <div className="flex-row justify-between items-center">
-                        <label className="label-text">
+                        <InputLabel>
                             Generated Data ({output.split("\n").length} items)
-                        </label>
+                        </InputLabel>
                         <button
                             onClick={handleCopy}
                             className="btn-base btn-secondary text-xs px-3 py-1"
@@ -245,10 +244,10 @@ export function RandomDataGenerator() {
                             {isCopying ? "Copying..." : "Copy Result"}
                         </button>
                     </div>
-                    <textarea
+                    <Textarea
                         value={output}
                         readOnly
-                        className="input-field min-h-[50vh] font-mono resize-y bg-black/40"
+                        className="min-h-50vh font-mono resize-y bg-black/40"
                         placeholder="Generated data will appear here..."
                         rows={Math.min(20, output.split("\n").length)}
                     />

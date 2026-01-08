@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Dropdown from "../../components/Dropdown";
-import "../../styles/texts/LoremGenerator.css";
 import { useToast } from "../../providers/ToastContext";
+import { TextInput, Textarea, InputLabel } from "../../components/inputs";
 
 const loremWords =
     "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua".split(
@@ -78,19 +78,18 @@ export function LoremGenerator() {
             <div className="glass-panel p-6 flex-col gap-md">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div className="flex-col gap-sm">
-                        <label className="label-text">Length</label>
-                        <input
+                        <InputLabel>Length</InputLabel>
+                        <TextInput
                             type="number"
                             min={1}
                             max={100}
-                            value={count}
+                            value={count.toString()}
                             onChange={(e) => setCount(parseInt(e.target.value) || 1)}
-                            className="input-field"
                         />
                     </div>
 
                     <div className="flex-col gap-sm">
-                        <label className="label-text">Type</label>
+                        <InputLabel>Type</InputLabel>
                         <Dropdown
                             options={[
                                 { label: "Paragraphs", value: "paragraphs" },
@@ -113,15 +112,15 @@ export function LoremGenerator() {
             {output && (
                 <div className="glass-panel p-6 flex-col gap-md">
                     <div className="flex-row justify-between items-center">
-                        <label className="label-text">Generated Text</label>
+                        <InputLabel>Generated Text</InputLabel>
                         <button onClick={handleCopy} className="btn-base btn-secondary text-xs px-3 py-1">
                             Copy Result
                         </button>
                     </div>
-                    <textarea
+                    <Textarea
                         value={output}
                         readOnly
-                        className="input-field min-h-[50vh] font-mono resize-y bg-black/40"
+                        className="min-h-50vh font-mono resize-y bg-black/40"
                         placeholder="Generated lorem ipsum will appear here..."
                     />
                 </div>

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import Dropdown from "../components/Dropdown";
+import { FileInput, RangeSlider, InputLabel } from "../components/inputs";
 
 
 interface Resolution {
@@ -206,9 +207,8 @@ const VideoCompressor: React.FC<VideoCompressorProps> = ({
 
             {/* File Upload Section */}
             <div className="w-full mb-8">
-                <input
+                <FileInput
                     ref={fileInputRef}
-                    type="file"
                     accept="video/*"
                     onChange={handleFileSelect}
                     className="hidden"
@@ -272,9 +272,9 @@ const VideoCompressor: React.FC<VideoCompressorProps> = ({
                         <div className="grid-2 mb-8">
                             {/* Resolution Dropdown */}
                             <div className="flex-col gap-sm">
-                                <label className="label-text">
+                                <InputLabel>
                                     Resolution
-                                </label>
+                                </InputLabel>
                                 <Dropdown
                                     options={defaultResolutions.map((res) => ({
                                         value: `${res.width}x${res.height}`,
@@ -293,9 +293,9 @@ const VideoCompressor: React.FC<VideoCompressorProps> = ({
 
                             {/* Export Type Dropdown */}
                             <div className="flex-col gap-sm">
-                                <label className="label-text">
+                                <InputLabel>
                                     Export Type
-                                </label>
+                                </InputLabel>
                                 <Dropdown
                                     options={exportTypes}
                                     value={compressionSettings.exportType}
@@ -310,9 +310,9 @@ const VideoCompressor: React.FC<VideoCompressorProps> = ({
 
                             {/* Format Dropdown */}
                             <div className="flex-col gap-sm">
-                                <label className="label-text">
+                                <InputLabel>
                                     Format
-                                </label>
+                                </InputLabel>
                                 <Dropdown
                                     options={getAvailableFormats()}
                                     value={compressionSettings.format}
@@ -324,14 +324,14 @@ const VideoCompressor: React.FC<VideoCompressorProps> = ({
 
                             {/* Quality Slider */}
                             <div className="flex-col gap-sm">
-                                <label className="label-text flex-row" style={{ justifyContent: 'space-between' }}>
+                                <InputLabel className="flex-row" style={{ justifyContent: 'space-between' }}>
                                     Quality
                                     <span className="text-primary">{compressionSettings.quality}%</span>
-                                </label>
-                                <input
+                                </InputLabel>
+                                <RangeSlider
                                     type="range"
-                                    min="1"
-                                    max="100"
+                                    min={1}
+                                    max={100}
                                     value={compressionSettings.quality}
                                     onChange={(e) =>
                                         handleSettingsChange(
@@ -339,7 +339,7 @@ const VideoCompressor: React.FC<VideoCompressorProps> = ({
                                             parseInt(e.target.value)
                                         )
                                     }
-                                    className="w-full"
+                                    showValue={false}
                                 />
                                 <div className="flex-row" style={{ justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
                                     <span>Smaller File</span>

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, type ReactNode, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
-import "../styles/components/Dropdown.css";
 
 export interface DropdownOption {
     label: string;
