@@ -20,6 +20,7 @@ type ToastMessage = {
 const WatermarkRemover: React.FC = () => {
     const [images, setImages] = useState<ImageItem[]>([]);
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
+    const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const dropRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -93,6 +94,15 @@ const WatermarkRemover: React.FC = () => {
             if (img.processedUrl) URL.revokeObjectURL(img.processedUrl);
         }
         setImages(prev => prev.filter(i => i.id !== id));
+    };
+
+    const removeAllImages = () => {
+        images.forEach(img => {
+            URL.revokeObjectURL(img.originalUrl);
+            if (img.processedUrl) URL.revokeObjectURL(img.processedUrl);
+        });
+        setImages([]);
+        addToast("All images removed", "info");
     };
 
     const processImage = async (image: ImageItem) => {
@@ -184,6 +194,30 @@ const WatermarkRemover: React.FC = () => {
         document.body.removeChild(link);
     };
 
+    // Add escape key support to close modal
+    useEffect(() => {
+        const handleEscapeKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && selectedImage) {
+                setSelectedImage(null);
+            }
+        };
+
+        window.addEventListener('keydown', handleEscapeKey);
+        return () => window.removeEventListener('keydown', handleEscapeKey);
+    }, [selectedImage]);
+
+    useEffect(() => {
+        if (selectedImage) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [selectedImage]);
+
     return (
         <div
             ref={dropRef}
@@ -239,6 +273,9 @@ const WatermarkRemover: React.FC = () => {
                             <button className="btn-base btn-primary" onClick={processAll}>
                                 Process All
                             </button>
+                            <button className="btn-base btn-danger" onClick={removeAllImages}>
+                                Remove All
+                            </button>
                             <button className="btn-base btn-secondary" onClick={() => fileInputRef.current?.click()}>
                                 Add More
                             </button>
@@ -258,15 +295,21 @@ const WatermarkRemover: React.FC = () => {
                     {/* Grid */}
                     <div className="grid-images">
                         {images.map(image => (
-                            <div key={image.id} className="image-card glass-card relative group">
+                            <div
+                                key={image.id}
+                                className="image-card glass-card relative group cursor-pointer"
+                                onClick={() => setSelectedImage(image)}
+                            >
                                 <button
                                     className="btn-remove absolute top-2 right-2"
-                                    onClick={() => removeImage(image.id)}
+                                    onClick={(e) => { e.stopPropagation(); removeImage(image.id); }}
                                 >
                                     ✕
                                 </button>
 
-                                <div className="aspect-square relative overflow-hidden rounded-md bg-black/20">
+                                <div
+                                    className="aspect-square relative overflow-hidden rounded-md bg-black/20"
+                                >
                                     <img
                                         src={image.processedUrl || image.originalUrl}
                                         alt={image.file.name}
@@ -291,13 +334,13 @@ const WatermarkRemover: React.FC = () => {
                                         <>
                                             <button
                                                 className="btn-sm btn-secondary w-full"
-                                                onClick={() => processImage(image)}
+                                                onClick={(e) => { e.stopPropagation(); processImage(image); }}
                                             >
                                                 Remove Watermark
                                             </button>
                                             <button
                                                 className="btn-sm btn-ghost w-full"
-                                                onClick={() => stripMetadata(image)}
+                                                onClick={(e) => { e.stopPropagation(); stripMetadata(image); }}
                                             >
                                                 Strip Metadata Only
                                             </button>
@@ -307,7 +350,7 @@ const WatermarkRemover: React.FC = () => {
                                     {image.processedUrl && (
                                         <button
                                             className="btn-sm btn-success w-full"
-                                            onClick={() => downloadImage(image)}
+                                            onClick={(e) => { e.stopPropagation(); downloadImage(image); }}
                                         >
                                             Download
                                         </button>
@@ -317,6 +360,68 @@ const WatermarkRemover: React.FC = () => {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Image Preview Modal */}
+            {selectedImage && (
+                <div className="modal-overlay" onClick={() => setSelectedImage(null)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3 className="modal-title">{selectedImage.file.name}</h3>
+                            <button
+                                className="btn-remove"
+                                onClick={() => setSelectedImage(null)}
+                                aria-label="Close preview"
+                            >
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <img
+                                src={selectedImage.processedUrl || selectedImage.originalUrl}
+                                alt={selectedImage.file.name}
+                                className="modal-image"
+                            />
+                        </div>
+                        <div className="modal-footer">
+                            {selectedImage.processedUrl ? (
+                                <button
+                                    className="btn-base btn-success w-full"
+                                    onClick={() => downloadImage(selectedImage)}
+                                >
+                                    Download
+                                </button>
+                            ) : (
+                                <div className="flex flex-col gap-sm w-full">
+                                    <p className="text-secondary text-sm">Image not processed yet</p>
+                                    <button
+                                        className="btn-sm btn-secondary w-full"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            processImage(selectedImage);
+                                            setSelectedImage(null);
+                                        }}
+                                    >
+                                        Remove Watermark
+                                    </button>
+                                    <button
+                                        className="btn-sm btn-ghost w-full"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            stripMetadata(selectedImage);
+                                            setSelectedImage(null);
+                                        }}
+                                    >
+                                        Strip Metadata Only
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
