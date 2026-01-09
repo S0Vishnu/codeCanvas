@@ -31,7 +31,8 @@ body {
   overflow-y: auto;
   width: 100%;
   max-width: 100vw;
-  background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+  background-color: var(--color-bg-main);
+  background-image: radial-gradient(circle at 50% 0%, #172554 0%, var(--color-bg-main) 70%); /* Deep Blue to Black */
   background-attachment: fixed;
   scrollbar-gutter: stable;
 }
@@ -43,28 +44,28 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+  background: var(--color-bg-main);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
+  background: var(--color-border);
   border-radius: 4px;
   transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+  background: var(--color-secondary);
 }
 
 ::-webkit-scrollbar-corner {
-  background: rgba(15, 23, 42, 0.5);
+  background: var(--color-bg-main);
 }
 
 /* Custom Scrollbar - Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(99, 102, 241, 0.3) rgba(15, 23, 42, 0.5);
+  scrollbar-color: var(--color-border) var(--color-bg-main);
 }
 
 a {

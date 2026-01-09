@@ -1,8 +1,32 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+    TbLayoutGrid,
+    TbPhoto,
+    TbTypography,
+    TbCube,
+    TbDots,
+    TbVideo,
+    TbTools,
+    TbMusic,
+    TbFileTypePdf
+} from "react-icons/tb";
 import Cursor from "./components/Cursor";
 import { links, type LinkItem } from "./data/pageLinks";
 import { storage } from "./utils/storage";
+
+const getCategoryIcon = (name: string) => {
+    const lower = name.toLowerCase();
+    if (lower.includes("all")) return <TbLayoutGrid className="icon" size={18} />;
+    if (lower.includes("image")) return <TbPhoto className="icon" size={18} />;
+    if (lower.includes("text")) return <TbTypography className="icon" size={18} />;
+    if (lower.includes("3d") || lower.includes("gltf")) return <TbCube className="icon" size={18} />;
+    if (lower.includes("video")) return <TbVideo className="icon" size={18} />;
+    if (lower.includes("audio")) return <TbMusic className="icon" size={18} />;
+    if (lower.includes("pdf")) return <TbFileTypePdf className="icon" size={18} />;
+    if (lower.includes("other")) return <TbDots className="icon" size={18} />;
+    return <TbTools className="icon" size={18} />;
+};
 
 const Pages = () => {
     const navigate = useNavigate();
@@ -52,7 +76,6 @@ const Pages = () => {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="input-field"
-                    style={{ minWidth: "250px", maxWidth: "100%" }}
                 />
             </h1>
 
@@ -80,22 +103,22 @@ const Pages = () => {
                         <h3 className="sidebar-title">Categories</h3>
                         <div className="sidebar-list">
                             <button
-                                className={`sidebar-item ${
-                                    activeSubcategory === "All Tools" ? "active" : ""
-                                }`}
+                                className={`sidebar-item ${activeSubcategory === "All Tools" ? "active" : ""
+                                    }`}
                                 onClick={() => setActiveSubcategory("All Tools")}
                             >
-                                All Tools
+                                <TbLayoutGrid className="icon" size={18} />
+                                <span>All Tools</span>
                             </button>
                             {toolSubcategories.map((subcat) => (
                                 <button
                                     key={subcat}
-                                    className={`sidebar-item ${
-                                        activeSubcategory === subcat ? "active" : ""
-                                    }`}
+                                    className={`sidebar-item ${activeSubcategory === subcat ? "active" : ""
+                                        }`}
                                     onClick={() => setActiveSubcategory(subcat)}
                                 >
-                                    {subcat}
+                                    {getCategoryIcon(subcat)}
+                                    <span>{subcat}</span>
                                 </button>
                             ))}
                         </div>
