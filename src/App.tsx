@@ -12,6 +12,7 @@ import { StringToArrayParser } from "./pages/code/StringToArrayParser";
 import BatchImageConverter from "./pages/image/ImageConverter";
 import ImageCompressor from "./pages/image/ImageCompressor";
 import ImageEnhancer from "./pages/image/ImageEnhancer";
+import WatermarkRemover from "./pages/image/WatermarkRemover/WatermarkRemover";
 
 // 🧱 GLTF / 3D Tools
 import AnimationEditor from "./pages/gltf/AnimationEditor";
@@ -53,6 +54,7 @@ function App() {
                     {/* === IMAGE TOOLS === */}
                     <Route path="/image-compressor" element={<ImageCompressor />} />
                     <Route path="/image-enhancer" element={<ImageEnhancer />} />
+                    <Route path="/watermark-remover" element={<WatermarkRemover />} /> {/* New Route */}
                     <Route path="/image-converter" element={<BatchImageConverter />} />
 
                     {/* === GLTF / 3D TOOLS === */}

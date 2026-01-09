@@ -117,6 +117,24 @@
 .gap-lg { gap: var(--spacing-lg); }
 .gap-xl { gap: var(--spacing-xl); }
 
+/* Positioning Utilities */
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+.sticky { position: sticky; }
+
+.top-0 { top: 0; }
+.top-2 { top: 0.5rem; }
+.right-0 { right: 0; }
+.right-2 { right: 0.5rem; }
+.bottom-0 { bottom: 0; }
+.bottom-2 { bottom: 0.5rem; }
+.left-0 { left: 0; }
+.left-2 { left: 0.5rem; }
+
+.z-10 { z-index: 10; }
+.z-20 { z-index: 20; }
+
 /* Grid Utilities */
 .grid-2 {
   display: grid;
@@ -687,6 +705,7 @@ button.btn-base {
   box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
   min-width: 2rem;
   min-height: 2rem;
+  z-index: 2;
 }
 
 .btn-remove:hover:not(:disabled) {
@@ -1116,7 +1135,7 @@ label.flex.flex-row.items-center:hover > span {
 /* Image Grid */
 .grid-images {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--spacing-lg);
   width: 100%;
   box-sizing: border-box;

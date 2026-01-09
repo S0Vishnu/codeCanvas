@@ -32,6 +32,14 @@ export const links: LinkItem[] = [
         beta: true,
         thumbnail: "/thumbnails/tools/image/enhancer.webp",
     },
+    {
+        name: "Gemini Watermark Remover",
+        path: "/watermark-remover",
+        category: "Tools",
+        subcategory: "Image Tools",
+        beta: true,
+        thumbnail: "/thumbnails/no-image.webp",
+    },
 
     // === TEXT TOOLS ===
     {
