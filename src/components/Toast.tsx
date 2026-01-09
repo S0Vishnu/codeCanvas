@@ -1,6 +1,7 @@
 import React from "react";
 import { type Toast as ToastType } from "../types/toast"; // Fixed import
 import { useToast } from "../providers/ToastContext";
+import "../styles/Toast.css";
 
 interface ToastProps {
     toast: ToastType;
