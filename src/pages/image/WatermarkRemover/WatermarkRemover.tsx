@@ -131,6 +131,45 @@ const WatermarkRemover: React.FC = () => {
         }
     };
 
+    const stripMetadata = async (image: ImageItem) => {
+        setImages(prev => prev.map(i => i.id === image.id ? { ...i, isProcessing: true, error: undefined } : i));
+
+        try {
+            // Load image onto an HTMLImageElement
+            const imgEl = new Image();
+            await new Promise<void>((resolve, reject) => {
+                imgEl.onload = () => resolve();
+                imgEl.onerror = reject;
+                imgEl.src = image.originalUrl;
+            });
+
+            // Create canvas and draw image to strip metadata
+            const canvas = document.createElement("canvas");
+            canvas.width = imgEl.width;
+            canvas.height = imgEl.height;
+            const ctx = canvas.getContext("2d");
+
+            if (!ctx) throw new Error("Could not get 2d context");
+
+            ctx.drawImage(imgEl, 0, 0);
+
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    const processedUrl = URL.createObjectURL(blob);
+                    setImages(prev => prev.map(i => i.id === image.id ? { ...i, isProcessing: false, processedUrl } : i));
+                    addToast(`Metadata removed from ${image.file.name}`, "success");
+                } else {
+                    throw new Error("Failed to generate blob");
+                }
+            }, "image/png");
+
+        } catch (error) {
+            console.error(error);
+            setImages(prev => prev.map(i => i.id === image.id ? { ...i, isProcessing: false, error: "Metadata removal failed" } : i));
+            addToast(`Failed to remove metadata from ${image.file.name}`, "error");
+        }
+    };
+
     const processAll = () => {
         images.filter(i => !i.processedUrl && !i.isProcessing).forEach(processImage);
     };
@@ -249,12 +288,20 @@ const WatermarkRemover: React.FC = () => {
                                     <p className="text-sm truncate" title={image.file.name}>{image.file.name}</p>
 
                                     {!image.processedUrl && !image.isProcessing && (
-                                        <button
-                                            className="btn-sm btn-secondary w-full"
-                                            onClick={() => processImage(image)}
-                                        >
-                                            Remove Watermark
-                                        </button>
+                                        <>
+                                            <button
+                                                className="btn-sm btn-secondary w-full"
+                                                onClick={() => processImage(image)}
+                                            >
+                                                Remove Watermark
+                                            </button>
+                                            <button
+                                                className="btn-sm btn-ghost w-full"
+                                                onClick={() => stripMetadata(image)}
+                                            >
+                                                Strip Metadata Only
+                                            </button>
+                                        </>
                                     )}
 
                                     {image.processedUrl && (
