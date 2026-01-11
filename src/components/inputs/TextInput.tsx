@@ -1,4 +1,4 @@
-import React, { type InputHTMLAttributes, forwardRef } from "react";
+import { type InputHTMLAttributes, forwardRef } from "react";
 
 export interface TextInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
     error?: boolean;

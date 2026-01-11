@@ -1,4 +1,4 @@
-import React, { type SelectHTMLAttributes, forwardRef } from "react";
+import { type SelectHTMLAttributes, forwardRef } from "react";
 
 export interface SelectOption {
     value: string | number;
@@ -10,6 +10,7 @@ export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement
     options: SelectOption[];
     error?: boolean;
     className?: string;
+    placeholder?: string;
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(

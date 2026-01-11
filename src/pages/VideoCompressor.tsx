@@ -324,12 +324,11 @@ const VideoCompressor: React.FC<VideoCompressorProps> = ({
 
                             {/* Quality Slider */}
                             <div className="flex-col gap-sm">
-                                <InputLabel className="flex-row" style={{ justifyContent: 'space-between' }}>
+                                <InputLabel className="flex-row justify-between">
                                     Quality
                                     <span className="text-primary">{compressionSettings.quality}%</span>
                                 </InputLabel>
                                 <RangeSlider
-                                    type="range"
                                     min={1}
                                     max={100}
                                     value={compressionSettings.quality}

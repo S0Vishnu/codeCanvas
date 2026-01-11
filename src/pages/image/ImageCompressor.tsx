@@ -631,7 +631,6 @@ const ImageCompressor: React.FC = () => {
                                         <span className="text-primary">{Math.round(globalQuality * 100)}%</span>
                                     </InputLabel>
                                     <RangeSlider
-                                        type="range"
                                         min={0.1}
                                         max={1}
                                         step={0.05}
@@ -649,7 +648,6 @@ const ImageCompressor: React.FC = () => {
                                         <span className="text-primary">{globalMaxDimension}px</span>
                                     </InputLabel>
                                     <RangeSlider
-                                        type="range"
                                         min={100}
                                         max={4000}
                                         step={100}

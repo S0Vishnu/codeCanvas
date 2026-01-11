@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 import type { DropdownOption } from "../../components/Dropdown";
 import Dropdown from "../../components/Dropdown";
 import { FiDownload, FiTrash2, FiCopy, FiEye } from "react-icons/fi";
-import { FileInput, Textarea, InputLabel } from "../../components/inputs";
+import { FileInput, Textarea } from "../../components/inputs";
 
 // extended output options
 type SupportedFormat =

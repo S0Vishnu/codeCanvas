@@ -31,7 +31,6 @@ const Controls: React.FC<ControlsProps> = ({
     canRedo,
     onZoom,
     onExport,
-    onExportDataUrl,
     onSetCropRatio,
 }) => {
     return (
@@ -58,7 +57,6 @@ const Controls: React.FC<ControlsProps> = ({
                     Brightness <span className="text-primary">{state.brightness}</span>
                 </InputLabel>
                 <RangeSlider
-                    type="range"
                     min={-100}
                     max={100}
                     value={state.brightness}
@@ -72,7 +70,6 @@ const Controls: React.FC<ControlsProps> = ({
                     Contrast <span className="text-primary">{state.contrast}</span>
                 </InputLabel>
                 <RangeSlider
-                    type="range"
                     min={-100}
                     max={100}
                     value={state.contrast}
@@ -86,7 +83,6 @@ const Controls: React.FC<ControlsProps> = ({
                     Saturation <span className="text-primary">{state.saturation}</span>
                 </InputLabel>
                 <RangeSlider
-                    type="range"
                     min={-100}
                     max={100}
                     value={state.saturation}
@@ -100,7 +96,6 @@ const Controls: React.FC<ControlsProps> = ({
                     Zoom <span className="text-primary">{state.zoom.toFixed(2)}x</span>
                 </InputLabel>
                 <RangeSlider
-                    type="range"
                     min={0.1}
                     max={3}
                     step={0.01}
